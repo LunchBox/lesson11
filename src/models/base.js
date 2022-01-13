@@ -27,8 +27,7 @@ export default class {
 		}
 	}
 
-  static _regModelData(id, data){
-    const model = this.fromStorage(data);
+  static _regModelData(id, model){
     model.id = id; 
 
     this.storage[id] = model;
@@ -38,7 +37,7 @@ export default class {
 	static async fetch(id){
     const res = await axios.get(`/api/${this.modelKey}/${id}`);
     
-    return this._regModelData(id, res.data);
+    return this._regModelData(id, this.build(res.data));
 	}
 
 	static async create(model) {
@@ -58,7 +57,7 @@ export default class {
 			headers: { "Content-Type": "application/json" },
 		});
 
-    return this._regModelData(id, res.data);
+    return this._regModelData(id, this.build(res.data));
 	}
 
 	static async destroy(model) {
@@ -69,7 +68,7 @@ export default class {
     delete this.storage[id];
 	}
 
-	static fromStorage(values = {}) {
+	static build(values = {}) {
 		return new this(values);
 	}
 

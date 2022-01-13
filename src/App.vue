@@ -3,6 +3,7 @@
 
 <template>
 	<router-view></router-view>
+  <footer></footer>
 </template>
 
 <style>
@@ -14,5 +15,11 @@
 
 		max-width: 640px;
 		margin: 0 auto;
+
+    font-size: 15px;
 	}
+
+  footer {
+    height: 10em;
+  }
 </style>

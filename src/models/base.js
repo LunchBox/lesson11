@@ -3,6 +3,10 @@ import propertyFilter from "../utils/property_filter.js";
 import axios from "axios";
 
 export default class {
+	static get modelKey() {
+		throw new Error("override this method to provide the model Key");
+	}
+
   // local cache
   static get storage(){
     if (!this._storage){
@@ -11,10 +15,6 @@ export default class {
 
     return this._storage;
   }
-
-	static get list() {
-    return computed(() => Object.values(this.storage)); 
-	}
 
 	static async fetchAll() {
 		try {
@@ -72,29 +72,29 @@ export default class {
 		return new this(values);
 	}
 
-	static get modelKey() {
-		throw new Error("override this method to provide the model Key");
-	}
 
 	static get all() {
-		return this.list;
+    return computed(() => Object.values(this.storage)); 
 	}
 
 	static find(id) {
+    if (!this.storage[id]){
+      this.fetch(id);
+    }
+
     return computed(() => this.storage[id] || null)
 	}
 
-	static findById(id) {
-		return this.find(id);
-	}
-
 	static where(conds = {}) {
-		let res = this.all.value;
-		for (let key in conds) {
-			res = res.filter((model) => model[key] === conds[key]);
-		}
+    return computed(() => {
+      let res = this.all.value;
 
-		return res;
+      for (let key in conds) {
+        res = res.filter((model) => model[key] === conds[key]);
+      }
+
+      return res;
+    });
 	}
 
 	constructor(attrs = {}) {

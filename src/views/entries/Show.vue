@@ -18,10 +18,6 @@
 	const route = useRoute();
 
   const entry = Entry.find(route.params.id)
-console.log(entry);
-
-  Entry.fetch(route.params.id);
-  
 </script>
 
 <style>

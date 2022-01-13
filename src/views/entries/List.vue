@@ -18,8 +18,7 @@
   Entry.fetchAll();
   console.log(Entry);
 
-  const list = Entry.list;
-console.log(list);
+  const list = Entry.all;
 </script>
 
 <style>

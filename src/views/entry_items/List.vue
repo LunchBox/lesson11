@@ -18,7 +18,7 @@
     entry: Entry
   });
 
-  const list = EntryItem.list;
+  const list = EntryItem.all;
 
   EntryItem.fetchAll();
 

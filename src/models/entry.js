@@ -12,6 +12,9 @@ export default class Entry extends Base {
   }; 
 
   get entryItems(){
-    return computed(() => this.entryItemIds.map(id => EntryItem.find(id)));
+    return computed(() => this.entryItemIds.map(id => EntryItem.find(id)).filter(x => x))
+    // return computed(() => EntryItem.where({ entryId: this.id }));
   }
 }
+
+console.log(Entry);

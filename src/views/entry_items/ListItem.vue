@@ -1,10 +1,12 @@
 <template>
-  <div>
+  <div v-if="entryItem">
     <div v-html="content"></div>
 
-    {{ entryItem }}
-    &middot;
-    <a @click.prevent="del(entryItem)">Del</a>
+    <div v-if="false">
+      {{ entryItem }}
+      &middot;
+      <a @click.prevent="del(entryItem)">Del</a>
+    </div>
   </div>
 </template>
 
@@ -15,17 +17,14 @@
   import Entry from "@/models/entry.js";
   import EntryItem from "@/models/entry_item.js";
 
-
   const props = defineProps({
     entry: Entry,
     entryItem: EntryItem
   });
 
-  console.log(props.entryItem);
-
   const content = computed(() => {
-		if (props.entryItem?.content) {
-			return marked(entryItem.content);
+		if (props.entryItem && props.entryItem.content) {
+			return marked(props.entryItem.content);
 		}
   });
 

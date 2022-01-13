@@ -12,13 +12,13 @@
 </template>
 
 <script setup>
+  import { computed } from "vue";
   import Entry from "@/models/entry.js";
 	import EntryForm from "./Form.vue";
 
+  const list = computed(() => Entry.all);
   Entry.fetchAll();
-  console.log(Entry);
-
-  const list = Entry.all;
+  
 </script>
 
 <style>

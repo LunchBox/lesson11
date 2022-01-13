@@ -1,4 +1,4 @@
-import { ref, reactive, computed, watch } from "vue";
+import { reactive } from "vue"; 
 import propertyFilter from "../utils/property_filter.js";
 import axios from "axios";
 
@@ -10,7 +10,7 @@ export default class {
   // local cache
   static get storage(){
     if (!this._storage){
-      this._storage = reactive({});
+      this._storage = reactive({}); 
     }
 
     return this._storage;
@@ -68,33 +68,28 @@ export default class {
     delete this.storage[id];
 	}
 
+
 	static build(values = {}) {
 		return new this(values);
 	}
 
 
 	static get all() {
-    return computed(() => Object.values(this.storage)); 
+    return Object.values(this.storage);
 	}
 
 	static find(id) {
-    if (!this.storage[id]){
-      this.fetch(id);
-    }
-
-    return computed(() => this.storage[id] || null)
+    return this.storage[id];
 	}
 
 	static where(conds = {}) {
-    return computed(() => {
-      let res = this.all.value;
+    let res = this.all;
 
-      for (let key in conds) {
-        res = res.filter((model) => model[key] === conds[key]);
-      }
+    for (let key in conds) {
+      res = res.filter((model) => model[key] === conds[key]);
+    }
 
-      return res;
-    });
+    return res;
 	}
 
 	constructor(attrs = {}) {

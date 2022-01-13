@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-	import { ref } from "vue";
+	import { ref, computed, toRef } from "vue";
 	import { useRoute } from "vue-router";
 
   import Entry from "@/models/entry.js";
@@ -17,7 +17,10 @@
 
 	const route = useRoute();
 
-  const entry = Entry.find(route.params.id)
+  Entry.fetch(route.params.id)
+  const entry = computed(() => Entry.find(route.params.id))
+
+  console.log(entry)
 </script>
 
 <style>

@@ -8,3 +8,5 @@ export default class EntryItem extends Base {
     content: { type: "text", default: null }
   }; 
 }
+
+console.log(EntryItem);

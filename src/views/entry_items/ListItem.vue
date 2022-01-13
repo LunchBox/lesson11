@@ -11,7 +11,7 @@
 			:entryItem="entryItem"
 			@after-submit="editing = false"
 		/>
-		<div v-else v-html="content" @dblclick="edit"></div>
+		<div v-else v-html="content" @dblclick.prevent="edit"></div>
 	</div>
 </template>
 
@@ -23,6 +23,23 @@
 	import EntryItem from "@/models/entry_item.js";
 
 	import EntryItemForm from "./Form.vue";
+
+	marked.setOptions({
+		renderer: new marked.Renderer(),
+		// highlight: function (code, lang) {
+		// 	const hljs = require("highlight.js");
+		// 	const language = hljs.getLanguage(lang) ? lang : "plaintext";
+		// 	return hljs.highlight(code, { language }).value;
+		// },
+		langPrefix: "hljs language-", // highlight.js css expects a top-level 'hljs' class.
+		pedantic: false,
+		gfm: true,
+		breaks: true,
+		sanitize: false,
+		smartLists: true,
+		smartypants: false,
+		xhtml: false,
+	});
 
 	const props = defineProps({
 		entry: Entry,

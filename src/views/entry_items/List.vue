@@ -65,8 +65,25 @@
 		formIdx.value = list.value.indexOf(entryItem);
 	}
 
+	function isInput(elem) {
+		const blackList = ["INPUT", "TEXTAREA", "SELECT"];
+		if (blackList.includes(elem.tagName)) {
+			return true;
+		}
+
+		if (elem.classList && elem.classList.contains("is-input")) {
+			return true;
+		}
+
+		if (elem.parentNode) {
+			return isInput(elem.parentNode);
+		}
+
+		return false;
+	}
+
 	document.addEventListener("keydown", (e) => {
-		if (e.code === "Enter") {
+		if (e.code === "Enter" && !e.ctrlKey && !isInput(e.target)) {
 			if (selection.value.length !== 1) {
 				return;
 			}

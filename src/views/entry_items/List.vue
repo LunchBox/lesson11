@@ -1,26 +1,99 @@
 <template>
-  <ListItem v-if="entry" v-for="entryItem in list" :key="entryItem.id" :entry="entry" :entryItem="entryItem">
-  </ListItem>
-	<EntryItemForm :entry="entry" />
+	<template v-for="(entryItem, idx) in list" :key="entryItem.id">
+		<ListItem
+			class="entry-item"
+			:entry="entry"
+			:entryItem="entryItem"
+			:class="{ selected: selected(entryItem) }"
+			@click="select(entryItem)"
+		/>
+		<EntryItemForm
+			v-if="realFormIdx === idx"
+			:entry="entry"
+			:formIdx="realFormIdx"
+			@after-create="afterCreate"
+		/>
+	</template>
 </template>
 
 <script setup>
-  import { computed } from "vue";
-  import Entry from "@/models/entry.js";
-  import EntryItem from "@/models/entry_item.js";
+	import { ref, computed, watch } from "vue";
+	import Entry from "@/models/entry.js";
+	import EntryItem from "@/models/entry_item.js";
 
 	import EntryItemForm from "./Form.vue";
 	import ListItem from "./ListItem.vue";
 
-  const props = defineProps({
-    entry: Entry
-  });
-  
-  props.entry.entryItemIds.forEach(id => EntryItem.fetch(id));
+	const props = defineProps({
+		entry: Entry,
+	});
 
-  const list = computed(() => props.entry.entryItems); 
+	props.entry.entryItemIds.forEach((id) => EntryItem.fetch(id));
 
+	const list = computed(() => props.entry.entryItems);
+
+	const selection = ref([]);
+
+	function select(entryItem) {
+		selection.value.splice(0);
+
+		if (!selection.value.includes(entryItem)) {
+			selection.value.push(entryItem);
+		}
+	}
+
+	function selected(entryItem) {
+		return selection.value.includes(entryItem);
+	}
+
+	const formIdx = ref(null);
+	const realFormIdx = computed(() => {
+		return formIdx.value === null ? list.value.length - 1 : formIdx.value;
+	});
+
+	function setFormUnder(entryItem) {
+		formIdx.value = list.value.indexOf(entryItem);
+	}
+
+	document.addEventListener("keydown", (e) => {
+		if (e.code === "Enter") {
+			if (selection.value.length !== 1) {
+				return;
+			}
+
+			setFormUnder(selection.value[0]);
+			selection.value.splice(0);
+		}
+
+		if (e.code === "KeyJ" && e.ctrlKey) {
+			if (realFormIdx.value < list.value.length - 1) {
+				formIdx.value = realFormIdx.value + 1;
+			}
+		}
+
+		if (e.code === "KeyK" && e.ctrlKey) {
+			if (realFormIdx.value > 0) {
+				formIdx.value = realFormIdx.value - 1;
+			}
+		}
+	});
+
+	function afterCreate() {
+		// if (formIdx.value > -1) {
+		formIdx.value = realFormIdx.value + 1;
+		// }
+	}
 </script>
 
-<style>
+<style scoped>
+	.entry-item {
+		padding: 0 0.5em;
+		margin: 0 -0.5em;
+		margin-left: calc(-0.5em - 4px);
+
+		border-left: 4px solid transparent;
+	}
+	.selected {
+		border-left-color: tomato;
+	}
 </style>

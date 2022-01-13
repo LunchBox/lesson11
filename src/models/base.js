@@ -82,7 +82,7 @@ export default class {
 	}
 
 	static find(id) {
-    return this.constructor.storage[id]
+    return computed(() => this.storage[id] || null)
 	}
 
 	static findById(id) {

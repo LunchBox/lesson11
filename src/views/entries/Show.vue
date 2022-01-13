@@ -1,5 +1,5 @@
 <template>
-	<div v-if="category">
+	<div v-if="entry">
 		<h2>{{ entry.title }}</h2>
 	</div>
 </template>
@@ -12,8 +12,10 @@
 
 	const route = useRoute();
 
-	const entry = ref(null);
-	Entry.fetch(route.params.id).then((model) => (entry.value = model));
+  const entry = Entry.find(route.params.id)
+
+  Entry.fetch(route.params.id);
+  
 </script>
 
 <style>

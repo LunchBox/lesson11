@@ -14,6 +14,12 @@
 			@after-create="afterCreate"
 		/>
 	</template>
+	<EntryItemForm
+		v-if="list.length === 0"
+		:entry="entry"
+		:formIdx="realFormIdx"
+		@after-create="afterCreate"
+	/>
 </template>
 
 <script setup>
@@ -48,7 +54,11 @@
 
 	const formIdx = ref(null);
 	const realFormIdx = computed(() => {
-		return formIdx.value === null ? list.value.length - 1 : formIdx.value;
+		if (formIdx.value !== null) {
+			return formIdx.value;
+		}
+
+		return list.value.length - 1;
 	});
 
 	function setFormUnder(entryItem) {
@@ -79,9 +89,8 @@
 	});
 
 	function afterCreate() {
-		// if (formIdx.value > -1) {
+		console.log("here", realFormIdx.value);
 		formIdx.value = realFormIdx.value + 1;
-		// }
 	}
 </script>
 

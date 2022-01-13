@@ -1,7 +1,7 @@
 <template>
 	<n-form @submit.prevent="onSubmit">
-		<n-form-item label="Category Name">
-			<n-input v-model:value="formData.name"></n-input>
+		<n-form-item label="Entry Title">
+			<n-input v-model:value="formData.title"></n-input>
 			<n-button attr-type="submit">Submit</n-button>
 		</n-form-item>
 	</n-form>
@@ -11,18 +11,19 @@
 	import { reactive } from "vue";
 	import { NForm, NFormItem, NInput, NButton } from "naive-ui";
 
-	import { save } from "@/store/categories.js";
+  import Entry from "@/models/entry.js";
 
 	const formData = reactive({
-		name: null,
+		title: null,
 	});
 
 	function reset() {
-		formData.name = null;
+		formData.title = null;
 	}
 
 	function onSubmit() {
-		save(formData);
+    const entry = new Entry(formData);
+    entry.create();
 		reset();
 	}
 </script>

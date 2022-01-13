@@ -1,11 +1,11 @@
 <template>
 	<h1>Hello World</h1>
 
-	<CategoryList></CategoryList>
+	<EntryList />
 </template>
 
 <script setup>
-	import CategoryList from "@/views/categories/List.vue";
+	import EntryList from "@/views/entries/List.vue";
 </script>
 
 <style>

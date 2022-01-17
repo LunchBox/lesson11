@@ -1,5 +1,6 @@
 <template>
 	<div v-if="entry">
+    {{ entry }}
 		<h2>{{ entry.title }}</h2>
 
 		<EntryItemList :entry="entry" />

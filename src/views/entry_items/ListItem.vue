@@ -1,6 +1,6 @@
 <template>
 	<div v-if="entryItem">
-		<div v-if="false">
+		<div v-if="true">
 			{{ entryItem }}
 			&middot;
 			<a @click.prevent="del">Del</a>

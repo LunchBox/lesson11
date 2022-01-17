@@ -7,6 +7,10 @@ export default class {
 		throw new Error("override this method to provide the model Key");
 	}
 
+  static attributes = {}; 
+
+  static attrsAccssor = [];
+
   // local cache
   static get storage(){
     if (!this._storage){
@@ -98,47 +102,61 @@ export default class {
 			const val = attrs[key];
 			this[key] = val === undefined ? config[key]?.default || null : val;
 		}
+
+    this.constructor.attrsAccssor.forEach((key) => {
+      this[key] = attrs[key] || null;
+    });
 	}
 
 	async create() {
-		this.beforeSave();
-		this.beforeCreate();
+		await this.beforeSave();
+		await this.beforeCreate();
 
 		await this.constructor.create(this);
+    console.log("-- before after create");
 
-		this.afterCreate();
-		this.afterSave();
+		await this.afterCreate();
+		await this.afterSave();
 	}
 
 	async update(attrs = {}) {
-		this.beforeSave();
-		this.beforeUpdate();
+		await this.beforeSave();
+		await this.beforeUpdate();
 
 		const { id, ...rest } = this;
 		await this.constructor.update(this, { ...rest, ...attrs });
 
-		this.afterUpdate();
-		this.afterSave();
+		await this.afterUpdate();
+		await this.afterSave();
 	}
 
+  async save(){
+    console.log(this.id);
+    if ( this.id ) {
+      await this.update();
+    } else {
+      await this.create();
+    }
+  }
+
 	async destroy() {
-		this.beforeDestroy();
+		await this.beforeDestroy();
 
 		await this.constructor.destroy(this);
 
-		this.afterDestroy();
+		await this.afterDestroy();
 	}
 
 	// override these callbacks for further actions
-	beforeCreate() {}
-	afterCreate() {}
+	async beforeCreate() { return true }
+	async afterCreate() { return true }
 
-	beforeSave() {}
-	afterSave() {}
+	async beforeSave() { return true }
+	async afterSave() { return true }
 
-	beforeUpdate() {}
-	afterUpdate() {}
+	async beforeUpdate() { return true }
+	async afterUpdate() { return true }
 
-	beforeDestroy() {}
-	afterDestroy() {}
+	async beforeDestroy() { return true }
+	async afterDestroy() { return true }
 }

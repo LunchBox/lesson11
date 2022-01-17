@@ -44,13 +44,10 @@
 
 	async function onSubmit() {
 		if (!editing.value) {
-			const entryItem = new EntryItem(formData);
+      const entryItem = new EntryItem(formData);
 			entryItem.entryId = props.entry.id;
-			await entryItem.create();
-
-			const pos = props.formIdx + 1;
-			props.entry.entryItemIds.splice(pos, 0, entryItem.id);
-			await props.entry.update();
+			entryItem.seq = props.formIdx + 1;
+      await entryItem.create();
 
 			emit("after-create");
 		} else {

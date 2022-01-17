@@ -11,6 +11,7 @@
 			v-if="realFormIdx === idx"
 			:entry="entry"
 			:formIdx="realFormIdx"
+      :key="realFormIdx"
 			@after-create="afterCreate"
 		/>
 	</template>
@@ -18,6 +19,7 @@
 		v-if="list.length === 0"
 		:entry="entry"
 		:formIdx="realFormIdx"
+    :key="-1"
 		@after-create="afterCreate"
 	/>
 </template>
@@ -107,7 +109,11 @@
 
 	function afterCreate() {
 		console.log("here", realFormIdx.value);
-		formIdx.value = realFormIdx.value + 1;
+    if ( formIdx.value){
+      formIdx.value += 1;
+    } else {
+      formIdx.value = realFormIdx.value;
+    }
 	}
 </script>
 

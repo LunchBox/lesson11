@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-	import { ref, computed } from "vue";
+	import { ref, computed, watch } from "vue";
 	import { marked } from "marked";
 
 	import Entry from "@/models/entry.js";
@@ -46,11 +46,27 @@
 		entryItem: EntryItem,
 	});
 
-	const content = computed(() => {
-		if (props.entryItem && props.entryItem.content) {
-			return marked(props.entryItem.content);
-		}
-	});
+  watch(
+    () => props.entryItem,
+    (newVal) => {
+      if (newVal) {
+        newVal.fetchItem();
+      }
+    },
+    { immediate: true }
+  );
+
+  const content = ref(null);
+  watch(
+    () => props.entryItem.item,
+    (newVal) => {
+      if (newVal) {
+        content.value = marked(newVal.content);
+      }
+    },
+    { immediate: true }
+  );
+
 
 	function del() {
 		const entryItem = props.entryItem;

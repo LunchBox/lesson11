@@ -3,6 +3,11 @@ import Base from "./base.js";
 import Entry from "./entry.js";
 import Memo from "./memo.js";
 
+const ITEM_TYPES = {
+  Memo
+};
+
+
 export default class EntryItem extends Base {
   static modelKey = "entry_items";
 
@@ -15,33 +20,31 @@ export default class EntryItem extends Base {
 
   static attrsAccssor = ["content", "seq"];
 
+  get item(){
+    return ITEM_TYPES[this.itemType].find(this.itemId);
+  }
+
+  async fetchItem(){
+    return await ITEM_TYPES[this.itemType].fetch(this.itemId);
+  }
+
   async beforeCreate(){
-    console.log("--- before create entry Item", this.content);
     if (this.content){
       const memo = new Memo({content: this.content});
       await memo.save();
       
       this.itemType = "Memo";
       this.itemId = memo.id;
-
-      console.log("-- after memo saved", this);
     } 
     return true;
   }
 
   async afterCreate(){
-    console.log("-- after create entryItem", this);
+    const entry = await Entry.fetch(this.entryId);
 
-    // const entry = await Entry.fetch(this.entryId);
-    const entry = Entry.find(this.entryId);
-
-    console.log(entry);
     entry.entryItemIds.splice(this.seq, 0, this.id);
 
-    console.log(entry);
-    // await entry.update();
-    entry.update();
-
+    await entry.update();
     return true;
   }
 }

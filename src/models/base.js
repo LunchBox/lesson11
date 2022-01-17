@@ -113,7 +113,6 @@ export default class {
 		await this.beforeCreate();
 
 		await this.constructor.create(this);
-    console.log("-- before after create", this);
 
 		await this.afterCreate();
 		await this.afterSave();
@@ -131,7 +130,6 @@ export default class {
 	}
 
   async save(){
-    console.log(this.id);
     if ( this.id ) {
       await this.update();
     } else {

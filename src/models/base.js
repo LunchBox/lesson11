@@ -1,6 +1,7 @@
 import { reactive } from "vue"; 
 import propertyFilter from "../utils/property_filter.js";
 import axios from "axios";
+import _ from 'lodash';
 
 export default class {
 	static get modelKey() {
@@ -64,11 +65,8 @@ export default class {
     return this._regModelData(id, this.build(res.data));
 	}
 
-	static async destroy(model) {
-		const { id, ...rest } = model;
-		const data = JSON.stringify(rest, propertyFilter);
-		const res = await axios.delete(`/api/${this.modelKey}/${id}`);
-
+	static async destroy(id) {
+		await axios.delete(`/api/${this.modelKey}/${id}`);
     delete this.storage[id];
 	}
 
@@ -140,7 +138,7 @@ export default class {
 	async destroy() {
 		await this.beforeDestroy();
 
-		await this.constructor.destroy(this);
+		await this.constructor.destroy(this.id);
 
 		await this.afterDestroy();
 	}
@@ -157,4 +155,23 @@ export default class {
 
 	async beforeDestroy() { return true }
 	async afterDestroy() { return true }
+
+
+
+  // associations
+  static hasOne(associationName, config = {}) {
+     
+    const cName = _.capitalize(associationName);
+    const typeName = `${associationName}Type`;
+    const idName = `${associationName}Id`;
+
+
+    this.prototype[`fetch${cName}`] = async function(){
+      // return await ITEM_TYPES[this[typeType]].fetch(this[idName]);
+    };
+
+    this.prototype[`afterDestroy`] = async function(){
+      // return await ITEM_TYPES[this[typeType]].destroy(this[idName]);
+    }
+  }
 }

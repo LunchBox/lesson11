@@ -15,7 +15,6 @@ export default class EntryItem extends Base {
     entryId: { type: "string", default: null },
     itemType: { type: "string", default: null },
     itemId: { type: "string", default: null },
-    // content: { type: "text", default: null }
   }; 
 
   static attrsAccssor = ["content", "seq"];
@@ -26,6 +25,10 @@ export default class EntryItem extends Base {
 
   async fetchItem(){
     return await ITEM_TYPES[this.itemType].fetch(this.itemId);
+  }
+
+  async afterDestroy(){
+    return await ITEM_TYPES[this.itemType].destroy(this.itemId); 
   }
 
   async beforeCreate(){
@@ -49,4 +52,4 @@ export default class EntryItem extends Base {
   }
 }
 
-console.log(EntryItem);
+// EntryItem.hasOne("item", {});

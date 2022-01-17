@@ -109,11 +109,11 @@ export default class {
 	}
 
 	async create() {
-		await this.beforeSave();
+    await this.beforeSave();
 		await this.beforeCreate();
 
 		await this.constructor.create(this);
-    console.log("-- before after create");
+    console.log("-- before after create", this);
 
 		await this.afterCreate();
 		await this.afterSave();

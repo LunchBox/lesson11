@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import Base from "./base.js";
 
-import EntryItem from "./entry_item.js"; 
+// import EntryItem from "./entry_item.js"; 
 
 export default class Entry extends Base {
   static modelKey = "entries";
@@ -11,9 +11,6 @@ export default class Entry extends Base {
     entryItemIds: { type: "array", default: [] }
   }; 
 
-  get entryItems(){
-    return computed(() => this.entryItemIds.map(id => EntryItem.find(id)).filter(x => x))
-  }
 }
 
 console.log(Entry);

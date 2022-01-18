@@ -20,6 +20,7 @@
 	import { NForm, NFormItem, NInput, NButton } from "naive-ui";
 
 	import Entry from "@/models/entry.js";
+	import Memo from "@/models/memo.js";
 	import EntryItem from "@/models/entry_item.js";
 
 	const props = defineProps({
@@ -44,9 +45,15 @@
 
 	async function onSubmit() {
 		if (!editing.value) {
+      const memo = new Memo({ content: formData.content });
+      await memo.save();
+
       const entryItem = new EntryItem(formData);
+      entryItem.item = memo;
 			entryItem.entryId = props.entry.id;
 			entryItem.seq = props.formIdx + 1;
+
+      console.log(entryItem);
       await entryItem.create();
 
 			emit("after-create");

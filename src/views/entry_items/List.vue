@@ -1,7 +1,8 @@
 <template>
-	<template v-for="(entryItem, idx) in list" :key="entryItem.id">
+	<template v-for="(entryItem, idx) in list" :key="entryItem?.id">
 		<ListItem
 			class="entry-item"
+      v-if="isEntryItem(entryItem)"
 			:entry="entry"
 			:entryItem="entryItem"
 			:class="{ selected: selected(entryItem) }"
@@ -53,6 +54,11 @@
 	function selected(entryItem) {
 		return selection.value.includes(entryItem);
 	}
+
+
+  function isEntryItem(entryItem){
+    return entryItem instanceof EntryItem;
+  }
 
 	const formIdx = ref(null);
 	const realFormIdx = computed(() => {

@@ -3,7 +3,24 @@ import propertyFilter from "../utils/property_filter.js";
 import axios from "axios";
 import _ from 'lodash';
 
-export default class {
+
+const CALLBACKS = [
+  "beforeCreate",
+  "afterCreate",
+
+  "beforeSave",
+  "afterSave",
+
+  "beforeUpdate",
+  "afterUpdate",
+
+  "beforeDestroy",
+  "afterDestroy",
+];
+
+
+
+export default class Base {
 	static get modelKey() {
 		throw new Error("override this method to provide the model Key");
 	}
@@ -143,35 +160,127 @@ export default class {
 		await this.afterDestroy();
 	}
 
-	// override these callbacks for further actions
-	async beforeCreate() { return true }
-	async afterCreate() { return true }
 
-	async beforeSave() { return true }
-	async afterSave() { return true }
+  static async actCallback(callbackType, model){
+    const cName = `_${callbackType}`;
+    
+    if (!this[cName]){
+      return null;
+    }
 
-	async beforeUpdate() { return true }
-	async afterUpdate() { return true }
+    const jobs = this[cName].map(cb => cb.bind(model)());
+    await Promise.all(jobs);
+  }
 
-	async beforeDestroy() { return true }
-	async afterDestroy() { return true }
-
-
+  // cb must be async 
+  static regCallback(callbackType, func){
+    const cName = `_${callbackType}`;
+    if (!this[cName]){
+      this[cName] = [];
+    }
+    this[cName].push(func);
+  }
 
   // associations
-  static hasOne(associationName, config = {}) {
+  static hasMany(associationName, config = { className: null, foreignKey: null, dependency: "nullify" }){
+    if(!config.className || !config.foreignKey){
+      throw new Error("className is required");
+    }
+
+    Object.defineProperty(this.prototype, associationName, {
+      get: function(){
+        if (config.collectionKey) {
+          return this[config.collectionKey].map(id => config.className.find(id));
+        }
+
+        return config.className.where({ [this[config.foreignKey]]: this.id });
+      }
+    });
+
+    CALLBACKS.forEach(callbackType => {
+      this.regCallback(callbackType, async function(){
+        // console.log(callbackType, this);
+
+        if (config[callbackType]){
+          await config[callbackType].bind(this)(this[associationName]);
+        }
+      });
+    });
+  }
+
+  static belongsTo(associationName, config = { className: null, foreignKey: null }){
+    if(!config.className || !config.foreignKey){
+      throw new Error("className is required");
+    }
+
+    Object.defineProperty(this.prototype, associationName, {
+      get: function(){
+        if (!this[config.foreignKey]){
+          return null;
+        }
+        return config.className.find(this[config.foreignKey]);
+      },
+      set: function(obj){
+        this[config.foreignKey] = obj.id;
+      }
+    });
+
+    CALLBACKS.forEach(callbackType => {
+      this.regCallback(callbackType, async function(){
+        // console.log(callbackType, this);
+
+        const association = await config.className.fetch(this[config.foreignKey]);
+
+        if (config[callbackType]){
+          await config[callbackType].bind(this)(association);
+        }
+      });
+    });
+  }
+  
+  static hasOne(associationName, config = { allowItemTypes: {} }) {
      
     const cName = _.capitalize(associationName);
     const typeName = `${associationName}Type`;
     const idName = `${associationName}Id`;
 
+    const ITEM_TYPES = config.allowItemTypes;
+
+    Object.defineProperty(this.prototype, associationName, {
+      get: function(){
+        if (!this[idName]){
+          return null;
+        }
+
+        return ITEM_TYPES[this[typeName]].find(this[idName]);
+      },
+      set: function(obj){
+        this[typeName] = obj.constructor.name;
+        this[idName] = obj.id;
+      }
+    });
 
     this.prototype[`fetch${cName}`] = async function(){
-      // return await ITEM_TYPES[this[typeType]].fetch(this[idName]);
+      return await ITEM_TYPES[this[typeName]].fetch(this[idName]);
     };
 
-    this.prototype[`afterDestroy`] = async function(){
-      // return await ITEM_TYPES[this[typeType]].destroy(this[idName]);
-    }
+    CALLBACKS.forEach(callbackType => {
+      this.regCallback(callbackType, async function(){
+        // console.log(callbackType, this);
+
+        const association = await config.allowItemTypes[this[typeName]].fetch(this[idName]);
+
+        if (config[callbackType]){
+          await config[callbackType].bind(this)(association);
+        }
+      });
+    });
   }
 }
+
+
+CALLBACKS.forEach(callbackType => {
+  Base.prototype[callbackType] = async function(){
+    await this.constructor.actCallback(callbackType, this);
+  }
+});

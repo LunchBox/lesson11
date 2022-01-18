@@ -1,7 +1,7 @@
 import { computed } from "vue";
-import Base from "./base.js";
+import ActiveRecord from "./active_record.js";
 
-export default class Memo extends Base {
+export default class Memo extends ActiveRecord {
   static modelKey = "memos";
 
   static attributes = {

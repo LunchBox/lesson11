@@ -1,6 +1,6 @@
-import Base from "./base.js";
+import ActiveRecord from "./active_record.js";
 
-export default class EntryItem extends Base {
+export default class EntryItem extends ActiveRecord {
   static modelKey = "entry_items";
 
   static attributes = {

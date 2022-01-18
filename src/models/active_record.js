@@ -20,7 +20,7 @@ const CALLBACKS = [
 
 
 
-export default class Base {
+export default class ActiveRecord {
 	static get modelKey() {
 		throw new Error("override this method to provide the model Key");
 	}
@@ -280,7 +280,7 @@ export default class Base {
 
 
 CALLBACKS.forEach(callbackType => {
-  Base.prototype[callbackType] = async function(){
+  ActiveRecord.prototype[callbackType] = async function(){
     await this.constructor.actCallback(callbackType, this);
   }
 });

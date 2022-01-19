@@ -6,6 +6,7 @@
 			:entry="entry"
 			:entryItem="entryItem"
 			:class="{ selected: selected(entryItem) }"
+      :showInfo="showInfo"
 			@click="select(entryItem)"
 		/>
 		<EntryItemForm
@@ -34,12 +35,14 @@
 	import ListItem from "./ListItem.vue";
 
 	const props = defineProps({
+    showInfo: Boolean,
 		entry: Entry,
 	});
 
 	props.entry.entryItemIds.forEach((id) => EntryItem.fetch(id));
 
 	const list = computed(() => props.entry.entryItems);
+
 
 	const selection = ref([]);
 

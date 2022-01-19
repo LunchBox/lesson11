@@ -1,14 +1,22 @@
 <template>
 	<div v-if="entry">
-    {{ entry }}
+    <div style="margin-bottom: 1em;">
+      <n-button @click="showInfo = !showInfo" text>Toggle Info</n-button>
+    </div>
+
+    <div v-if="showInfo">
+      {{ entry }}
+    </div>
+
 		<h2>{{ entry.title }}</h2>
 
-		<EntryItemList :entry="entry" />
+		<EntryItemList :entry="entry" :showInfo="showInfo" />
 	</div>
 </template>
 
 <script setup>
 	import { ref, computed, toRef } from "vue";
+  import { NButton } from "naive-ui";
 	import { useRoute } from "vue-router";
 
 	import Entry from "@/models/entry.js";
@@ -20,8 +28,30 @@
 	Entry.fetch(route.params.id);
 	const entry = computed(() => Entry.find(route.params.id));
 
+  const showInfo = ref(false);
 	console.log(entry);
 </script>
 
 <style>
+pre {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	font-size: 13px;
+	line-height: 20px;
+	tab-size: 4;
+
+	background: #f5f7fa;
+	line-height: 1.35;
+	border-radius: 2px;
+	padding: 0.5em;
+}
+
+
+pre code {
+	border: 0;
+	color: #555;
+	font-size: 13px;
+	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+	tab-size: 4;
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<div v-if="entryItem">
-		<div v-if="true">
+		<div v-if="showInfo">
 			{{ entryItem }}
 			&middot;
 			<a @click.prevent="del">Del</a>
@@ -42,6 +42,7 @@
 	});
 
 	const props = defineProps({
+    showInfo: Boolean,
 		entry: Entry,
 		entryItem: EntryItem,
 	});

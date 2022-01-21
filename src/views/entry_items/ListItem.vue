@@ -97,7 +97,15 @@
 		editing.value = true;
 	}
 
+const eiMark = computed(() => {
+  return `EI::${props.entryItem.id}`;
+});
+
   const options = [
+    {
+      label: () => eiMark.value, 
+      key: () => eiMark.value 
+    },
     {
       label: "edit",
       key: edit
@@ -110,6 +118,7 @@
 
 
   function handleSelect(key){
+    console.log(key);
     if (typeof key === "function"){
       key();
     }

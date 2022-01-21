@@ -6,12 +6,7 @@
 			<a @click.prevent="del">Del</a>
 		</div>
 
-		<EntryItemForm
-			v-if="editing"
-			:entryItem="entryItem"
-			@after-submit="editing = false"
-		/>
-    <div v-else style="display: flex; align-items: baseline;">
+    <div style="display: flex; align-items: baseline;">
       <div class="ei-menu" :class="{ active: isSelected }"> 
         <n-dropdown 
           @select="handleSelect" 
@@ -22,7 +17,9 @@
           <n-button text>M</n-button>
         </n-dropdown>
       </div>
-      <div style="flex: 1;" v-html="content" @dblclick.prevent="edit"></div>
+      <div style="flex: 1" @dblclick.prevent="edit">
+        <component :is="MemoView" :memo="entryItem.item" :editing="editing"></component>
+      </div>
     </div>
 	</div>
 </template>
@@ -36,6 +33,8 @@
 	import EntryItem from "@/models/entry_item.js";
 
 	import EntryItemForm from "./Form.vue";
+
+  import MemoView from "../memos/Show.vue";
 
 	marked.setOptions({
 		renderer: new marked.Renderer(),

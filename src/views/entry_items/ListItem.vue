@@ -11,12 +11,25 @@
 			:entryItem="entryItem"
 			@after-submit="editing = false"
 		/>
-		<div v-else v-html="content" @dblclick.prevent="edit"></div>
+    <div v-else style="display: flex; align-items: baseline;">
+      <div class="ei-menu" :class="{ active: isSelected }"> 
+        <n-dropdown 
+          @select="handleSelect" 
+          trigger="click" 
+          placement="bottom-start"
+          :options="options"
+        >
+          <n-button text>M</n-button>
+        </n-dropdown>
+      </div>
+      <div style="flex: 1;" v-html="content" @dblclick.prevent="edit"></div>
+    </div>
 	</div>
 </template>
 
 <script setup>
 	import { ref, computed, watch } from "vue";
+  import { NDropdown, NButton } from "naive-ui";
 	import { marked } from "marked";
 
 	import Entry from "@/models/entry.js";
@@ -43,6 +56,7 @@
 
 	const props = defineProps({
     showInfo: Boolean,
+    isSelected: Boolean,
 		entry: Entry,
 		entryItem: EntryItem,
 	});
@@ -83,7 +97,34 @@
 	function edit() {
 		editing.value = true;
 	}
+
+  const options = [
+    {
+      label: "edit",
+      key: edit
+    },
+    {
+      label: "delete",
+      key: "delete"
+    },
+  ];
+
+
+  function handleSelect(key){
+    if (typeof key === "function"){
+      key();
+    }
+  }
 </script>
 
-<style>
+<style scoped>
+.ei-menu {
+  margin-right: 20px; 
+  margin-left: -32px;
+  visibility: hidden;
+}
+
+.ei-menu.active {
+  visibility: visible; 
+}
 </style>

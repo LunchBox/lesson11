@@ -7,6 +7,7 @@
 			:entryItem="entryItem"
 			:class="{ selected: selected(entryItem) }"
       :showInfo="showInfo"
+      :isSelected="selected(entryItem)"
 			@click="select(entryItem)"
 		/>
 		<EntryItemForm

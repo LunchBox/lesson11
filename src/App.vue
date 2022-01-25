@@ -16,7 +16,8 @@
 		max-width: 640px;
 		margin: 0 auto;
 
-    font-size: 15px;
+    font-size: 16px;
+    line-height: 1.5;
 	}
 
   footer {

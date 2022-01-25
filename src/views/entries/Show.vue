@@ -44,10 +44,18 @@ pre {
 	line-height: 1.35;
 	border-radius: 2px;
 	padding: 0.5em;
+  padding: 2em;
 }
 
+code {
+  background: rgba(135,131,120,0.15);
+  color: #EB5757;
+  padding: 0.2em 0.4em;
+}
 
 pre code {
+  background: transparent;
+  padding: 0;
 	border: 0;
 	color: #555;
 	font-size: 13px;

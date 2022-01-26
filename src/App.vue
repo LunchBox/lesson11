@@ -14,6 +14,7 @@
 		color: #2c3e50;
 
 		max-width: 640px;
+    max-width: 56rem;
 		margin: 0 auto;
 
     font-size: 16px;

@@ -5,7 +5,7 @@
 			:memo="memo"
 			@after-submit="editing = false"
 		/>
-    <div v-else v-html="content"></div>
+    <div v-else v-html="content" class="memo"></div>
 	</div>
 </template>
 
@@ -51,4 +51,7 @@
 </script>
 
 <style scoped>
+.memo {
+  font-family: charter, Georgia, Cambria, "Times New Roman", Times, serif;
+}
 </style>

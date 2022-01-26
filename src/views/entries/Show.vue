@@ -44,7 +44,7 @@ pre {
 	line-height: 1.35;
 	border-radius: 2px;
 	padding: 0.5em;
-  padding: 2em;
+  padding: 1em;
 }
 
 code {

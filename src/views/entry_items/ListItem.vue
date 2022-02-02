@@ -1,36 +1,34 @@
 <template>
-	<div v-if="entryItem">
-		<div v-if="showInfo">
-			{{ entryItem }}
-			&middot;
-			<a @click.prevent="del">Del</a>
+	<div v-if="entryItem" class="entry-item list-item" @dblclick.prevent="edit">
+		<div class="entry-item__menus">
+			<span class="icon" @click="showMenus = true"></span>
+			<div
+				v-if="isSelected && showMenus"
+				class="menus"
+				@click.stop="showMenus = false"
+			>
+				<ul>
+					<li>
+						<span> {{ eiMark }} </span>
+					</li>
+					<li>
+						<a @click="edit">Edit</a>
+					</li>
+					<li>
+						<a @click="del">Del</a>
+					</li>
+				</ul>
+			</div>
 		</div>
-
-		<div class="main-content">
-			<div class="ei-menu" :class="{ active: isSelected }">
-				<n-dropdown
-					@select="handleSelect"
-					trigger="click"
-					placement="bottom-start"
-					:options="options"
-				>
-					<n-button text>M</n-button>
-				</n-dropdown>
-			</div>
-			<div style="flex: 1" @dblclick.prevent="edit">
-				<component
-					:is="MemoView"
-					:memo="entryItem.item"
-					:editing="editing"
-				></component>
-			</div>
+		<div class="entry-item__content">
+			<component :is="MemoView" :memo="entryItem.item" :editing="editing">
+			</component>
 		</div>
 	</div>
 </template>
 
 <script setup>
 	import { ref, computed, watch } from "vue";
-	import { NDropdown, NButton } from "naive-ui";
 	import { marked } from "marked";
 
 	import Entry from "@/models/entry.js";
@@ -65,6 +63,15 @@
 	});
 
 	watch(
+		() => props.isSelected,
+		(newVal) => {
+			if (!newVal) {
+				showMenus.value = false;
+			}
+		}
+	);
+
+	watch(
 		() => props.entryItem,
 		(newVal) => {
 			if (newVal) {
@@ -84,6 +91,8 @@
 		},
 		{ immediate: true }
 	);
+
+	const showMenus = ref(false);
 
 	function del() {
 		const entryItem = props.entryItem;
@@ -128,18 +137,4 @@
 </script>
 
 <style scoped>
-	.main-content {
-		display: flex;
-		align-items: baseline;
-		border: 1px solid transparent;
-	}
-	.ei-menu {
-		margin-right: 20px;
-		margin-left: -32px;
-		visibility: hidden;
-	}
-
-	.ei-menu.active {
-		visibility: visible;
-	}
 </style>

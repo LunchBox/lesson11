@@ -1,7 +1,6 @@
 <template>
 	<template v-for="(entryItem, idx) in list" :key="entryItem?.id">
 		<ListItem
-			class="entry-item"
 			v-if="isEntryItem(entryItem)"
 			:entry="entry"
 			:entryItem="entryItem"
@@ -125,15 +124,72 @@
 	}
 </script>
 
-<style scoped>
+<style>
 	.entry-item {
-		padding: 0 0.5em;
-		margin: 0 -0.5em;
-		margin-left: calc(-0.5em - 4px);
+		margin-left: calc(-2.5em - 4px);
+		display: flex;
+	}
+
+	.entry-item__menus {
+		width: 2em;
+		height: 100%;
+
+		position: relative;
+	}
+
+	.entry-item__menus .icon {
+		display: block;
+		width: 1rem;
+		height: 1rem;
+		border: 1px solid #ccc;
+		border-radius: 2px;
+		margin-top: 0.5rem;
+		cursor: pointer;
+
+		visibility: hidden;
+	}
+
+	.entry-item.selected .entry-item__menus .icon {
+		visibility: visible;
+	}
+
+	.entry-item__menus .menus {
+		position: absolute;
+		z-index: 1;
+		margin-top: 2px;
+
+		background: #fff;
+		color: #555;
+		font-size: 12px;
+		font-family: Monaco, Consolas, "Courier New", monospace;
+
+		border: 1px solid #ccc;
+		border-radius: 2px;
+		padding: 0.5em;
+	}
+
+	.entry-item__menus .menus ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.entry-item__menus .menus ul li > * {
+		display: block;
+		padding: 0 4px;
+	}
+
+	.entry-item__menus .menus ul li a:hover {
+		background: #eee;
+	}
+
+	.entry-item__content {
+		flex: 1;
 
 		border-left: 4px solid transparent;
+		padding-left: 0.5em;
 	}
-	.selected {
+	.entry-item.selected .entry-item__content {
 		border-left-color: tomato;
 	}
 </style>

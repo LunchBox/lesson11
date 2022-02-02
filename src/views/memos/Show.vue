@@ -1,11 +1,7 @@
 <template>
 	<div v-if="memo">
-		<MemoForm
-			v-if="editing"
-			:memo="memo"
-			@after-submit="editing = false"
-		/>
-    <div v-else v-html="content" class="memo"></div>
+		<MemoForm v-if="editing" :memo="memo" @after-submit="editing = false" />
+		<div v-else v-html="content" class="memo"></div>
 	</div>
 </template>
 
@@ -35,23 +31,21 @@
 	});
 
 	const props = defineProps({
-    memo: Memo,
-    editing: Boolean
+		memo: Memo,
+		editing: Boolean,
 	});
 
-  const content = computed(() => {
-    if (props.memo){
-      return marked(props.memo.content)
-    } else {
-      return "- BLANK -"
-    }
-  });
-
-
+	const content = computed(() => {
+		if (props.memo) {
+			return marked(props.memo.content);
+		} else {
+			return "- BLANK -";
+		}
+	});
 </script>
 
 <style scoped>
-.memo {
-  font-family: charter, Georgia, Cambria, "Times New Roman", Times, serif;
-}
+	::v-deep p {
+		margin: 0.5em 0;
+	}
 </style>

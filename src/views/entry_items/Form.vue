@@ -1,27 +1,32 @@
 <template>
-	<n-form @submit.prevent="onSubmit">
-		<n-form-item>
-			<n-input
-				v-model:value="formData.content"
-				type="textarea"
+	<div style="margin: 0.5em 0">
+		<form @submit.prevent="onSubmit">
+			<textarea
+				ref="inputField"
+				v-model="formData.content"
 				placeholder="Content"
 				autofocus
-				:autosize="{
-					minRows: 1,
-				}"
 				@keydown.enter.ctrl="onSubmit"
-			/>
-		</n-form-item>
-	</n-form>
+			></textarea>
+		</form>
+	</div>
 </template>
 
 <script setup>
-	import { ref, reactive, watch } from "vue";
-	import { NForm, NFormItem, NInput, NButton } from "naive-ui";
+	import { ref, reactive, watch, onMounted, nextTick } from "vue";
 
 	import Entry from "@/models/entry.js";
 	import Memo from "@/models/memo.js";
 	import EntryItem from "@/models/entry_item.js";
+
+	import autosize from "autosize";
+
+	const inputField = ref(null);
+	onMounted(() => {
+		nextTick(() => {
+			autosize(inputField.value);
+		});
+	});
 
 	const props = defineProps({
 		entry: Entry,
@@ -45,16 +50,16 @@
 
 	async function onSubmit() {
 		if (!editing.value) {
-      const memo = new Memo({ content: formData.content });
-      await memo.save();
+			const memo = new Memo({ content: formData.content });
+			await memo.save();
 
-      const entryItem = new EntryItem(formData);
-      entryItem.item = memo;
+			const entryItem = new EntryItem(formData);
+			entryItem.item = memo;
 			entryItem.entryId = props.entry.id;
 			entryItem.seq = props.formIdx + 1;
 
-      console.log(entryItem);
-      await entryItem.create();
+			console.log(entryItem);
+			await entryItem.create();
 
 			emit("after-create");
 		} else {
@@ -82,5 +87,9 @@
 	);
 </script>
 
-<style>
+<style scoped>
+	textarea {
+		height: 1.6em;
+		resize: none;
+	}
 </style>

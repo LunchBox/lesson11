@@ -7,6 +7,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "autosize": "^5.0.1",
     "axios": "^0.24.0",
     "lodash": "^4.17.21",
     "marked": "^4.0.10",

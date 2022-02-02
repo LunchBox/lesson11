@@ -2,19 +2,19 @@
 	<template v-for="(entryItem, idx) in list" :key="entryItem?.id">
 		<ListItem
 			class="entry-item"
-      v-if="isEntryItem(entryItem)"
+			v-if="isEntryItem(entryItem)"
 			:entry="entry"
 			:entryItem="entryItem"
 			:class="{ selected: selected(entryItem) }"
-      :showInfo="showInfo"
-      :isSelected="selected(entryItem)"
+			:showInfo="showInfo"
+			:isSelected="selected(entryItem)"
 			@click="select(entryItem)"
 		/>
 		<EntryItemForm
 			v-if="realFormIdx === idx"
 			:entry="entry"
 			:formIdx="realFormIdx"
-      :key="realFormIdx"
+			:key="realFormIdx"
 			@after-create="afterCreate"
 		/>
 	</template>
@@ -22,7 +22,7 @@
 		v-if="list.length === 0"
 		:entry="entry"
 		:formIdx="realFormIdx"
-    :key="-1"
+		:key="-1"
 		@after-create="afterCreate"
 	/>
 </template>
@@ -36,14 +36,13 @@
 	import ListItem from "./ListItem.vue";
 
 	const props = defineProps({
-    showInfo: Boolean,
+		showInfo: Boolean,
 		entry: Entry,
 	});
 
 	props.entry.entryItemIds.forEach((id) => EntryItem.fetch(id));
 
 	const list = computed(() => props.entry.entryItems);
-
 
 	const selection = ref([]);
 
@@ -59,10 +58,9 @@
 		return selection.value.includes(entryItem);
 	}
 
-
-  function isEntryItem(entryItem){
-    return entryItem instanceof EntryItem;
-  }
+	function isEntryItem(entryItem) {
+		return entryItem instanceof EntryItem;
+	}
 
 	const formIdx = ref(null);
 	const realFormIdx = computed(() => {
@@ -119,11 +117,11 @@
 
 	function afterCreate() {
 		console.log("here", realFormIdx.value);
-    if ( formIdx.value){
-      formIdx.value += 1;
-    } else {
-      formIdx.value = realFormIdx.value;
-    }
+		if (formIdx.value) {
+			formIdx.value += 1;
+		} else {
+			formIdx.value = realFormIdx.value;
+		}
 	}
 </script>
 

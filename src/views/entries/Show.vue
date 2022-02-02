@@ -56,11 +56,9 @@
 		color: #555;
 		font-size: 13px;
 		font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
-		tab-size: 4;
 		background: #f5f7fa;
 		line-height: 1.35;
 		border-radius: 2px;
-		padding: 0.5em;
 	}
 </style>
 

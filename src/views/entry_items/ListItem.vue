@@ -1,5 +1,5 @@
 <template>
-	<div v-if="entryItem" class="entry-item list-item" @dblclick.prevent="edit">
+	<div v-if="entryItem" class="entry-item list-item">
 		<div class="entry-item__menus">
 			<span class="icon" @click="showMenus = true"></span>
 			<div
@@ -20,8 +20,13 @@
 				</ul>
 			</div>
 		</div>
-		<div class="entry-item__content">
-			<component :is="MemoView" :memo="entryItem.item" :editing="editing">
+		<div class="entry-item__content" @dblclick.prevent="edit">
+			<component
+				:is="MemoView"
+				:memo="entryItem.item"
+				:editing="editing"
+				@after-submit="editing = false"
+			>
 			</component>
 		</div>
 	</div>

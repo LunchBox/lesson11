@@ -1,27 +1,26 @@
 <template>
-	<template v-for="(entryItem, idx) in list" :key="entryItem?.id">
+	<template v-for="(entryItem, idx) in entryItemList" :key="entryItem.id">
 		<ListItem
-			v-if="isEntryItem(entryItem)"
 			:entry="entry"
 			:entryItem="entryItem"
 			:class="{ selected: selected(entryItem) }"
 			:showInfo="showInfo"
 			:isSelected="selected(entryItem)"
 			@click="select(entryItem)"
-		/>
+		>
+		</ListItem>
 		<EntryItemForm
-			v-if="realFormIdx === idx"
+			v-if="formIdx === idx"
 			:entry="entry"
-			:formIdx="realFormIdx"
-			:key="realFormIdx"
+			:formIdx="formIdx"
 			@after-create="afterCreate"
 		/>
 	</template>
+
 	<EntryItemForm
-		v-if="list.length === 0"
+		v-if="entryItemList.length === 0"
 		:entry="entry"
-		:formIdx="realFormIdx"
-		:key="-1"
+		:formIdx="formIdx"
 		@after-create="afterCreate"
 	/>
 </template>
@@ -42,6 +41,9 @@
 	props.entry.entryItemIds.forEach((id) => EntryItem.fetch(id));
 
 	const list = computed(() => props.entry.entryItems);
+	const entryItemList = computed(() =>
+		list.value.filter((item) => isEntryItem(item))
+	);
 
 	const selection = ref([]);
 
@@ -61,14 +63,7 @@
 		return entryItem instanceof EntryItem;
 	}
 
-	const formIdx = ref(null);
-	const realFormIdx = computed(() => {
-		if (formIdx.value !== null) {
-			return formIdx.value;
-		}
-
-		return list.value.length - 1;
-	});
+	const formIdx = ref(0);
 
 	function setFormUnder(entryItem) {
 		formIdx.value = list.value.indexOf(entryItem);
@@ -102,25 +97,14 @@
 		}
 
 		if (e.code === "KeyJ" && e.ctrlKey) {
-			if (realFormIdx.value < list.value.length - 1) {
-				formIdx.value = realFormIdx.value + 1;
-			}
 		}
 
 		if (e.code === "KeyK" && e.ctrlKey) {
-			if (realFormIdx.value > 0) {
-				formIdx.value = realFormIdx.value - 1;
-			}
 		}
 	});
 
 	function afterCreate() {
-		console.log("here", realFormIdx.value);
-		if (formIdx.value) {
-			formIdx.value += 1;
-		} else {
-			formIdx.value = realFormIdx.value;
-		}
+		formIdx.value += 1;
 	}
 </script>
 

@@ -1,6 +1,10 @@
 <template>
 	<div v-if="memo">
-		<MemoForm v-if="editing" :memo="memo" @after-submit="editing = false" />
+		<MemoForm
+			v-if="editing"
+			:memo="memo"
+			@after-submit="$emit('after-submit')"
+		/>
 		<div v-else v-html="content" class="memo"></div>
 	</div>
 </template>

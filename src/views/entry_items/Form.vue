@@ -56,7 +56,8 @@
 			const entryItem = new EntryItem(formData);
 			entryItem.item = memo;
 			entryItem.entryId = props.entry.id;
-			entryItem.seq = props.formIdx + 1;
+
+			entryItem.$position = props.formIdx;
 
 			console.log(entryItem);
 			await entryItem.create();

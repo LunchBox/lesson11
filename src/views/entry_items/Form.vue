@@ -40,33 +40,24 @@
 		content: null,
 	});
 
-	const editing = ref(null);
-
 	function reset() {
 		formData.content = null;
-
-		editing.value = null;
 	}
 
 	async function onSubmit() {
-		if (!editing.value) {
-			const memo = new Memo({ content: formData.content });
-			await memo.save();
+		const memo = new Memo({ content: formData.content });
+		await memo.save();
 
-			const entryItem = new EntryItem(formData);
-			entryItem.item = memo;
-			entryItem.entryId = props.entry.id;
+		const entryItem = new EntryItem(formData);
+		entryItem.item = memo;
+		entryItem.entryId = props.entry.id;
 
-			entryItem.$position = props.formIdx;
+		entryItem.$position = props.formIdx;
 
-			console.log(entryItem);
-			await entryItem.create();
+		console.log(entryItem);
+		await entryItem.create();
 
-			emit("after-create");
-		} else {
-			await editing.value.update(formData);
-			emit("after-update");
-		}
+		emit("after-create");
 
 		emit("after-submit");
 
@@ -80,8 +71,6 @@
 				for (let key in formData) {
 					formData[key] = newVal[key];
 				}
-
-				editing.value = newVal;
 			}
 		},
 		{ immediate: true }

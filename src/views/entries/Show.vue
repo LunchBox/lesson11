@@ -59,6 +59,7 @@
 		background: #f5f7fa;
 		line-height: 1.35;
 		border-radius: 2px;
+		padding: 0;
 	}
 </style>
 

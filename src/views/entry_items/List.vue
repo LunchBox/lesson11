@@ -106,6 +106,9 @@
 
 	function afterCreate() {
 		formIdx.value += 1;
+		if (formIdx.value >= list.value.length) {
+			formIdx.value = list.value.length - 1;
+		}
 	}
 </script>
 

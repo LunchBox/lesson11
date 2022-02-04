@@ -94,5 +94,7 @@
 		border: 1px solid #eee;
 		margin: 0.5em 0;
 		height: auto;
+
+		line-height: 1.35;
 	}
 </style>

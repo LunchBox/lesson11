@@ -25,7 +25,7 @@
 				:is="MemoView"
 				:memo="entryItem.item"
 				:editing="editing"
-				@after-submit="editing = false"
+				@after-submit="afterSubmit"
 			>
 			</component>
 		</div>
@@ -67,6 +67,8 @@
 		entryItem: EntryItem,
 	});
 
+	const emit = defineEmits(["after-submit"]);
+
 	watch(
 		() => props.isSelected,
 		(newVal) => {
@@ -76,15 +78,15 @@
 		}
 	);
 
-	watch(
-		() => props.entryItem,
-		(newVal) => {
-			if (newVal) {
-				newVal.fetchItem();
-			}
-		},
-		{ immediate: true }
-	);
+	// watch(
+	// 	() => props.entryItem,
+	// 	(newVal) => {
+	// 		if (newVal) {
+	// 			newVal.fetchItem();
+	// 		}
+	// 	},
+	// 	{ immediate: true }
+	// );
 
 	const content = ref(null);
 	watch(
@@ -114,31 +116,14 @@
 		editing.value = true;
 	}
 
+	function afterSubmit() {
+		editing.value = false;
+		emit("after-submit");
+	}
+
 	const eiMark = computed(() => {
 		return `EI::${props.entryItem.id}`;
 	});
-
-	const options = [
-		{
-			label: () => eiMark.value,
-			key: () => eiMark.value,
-		},
-		{
-			label: "edit",
-			key: edit,
-		},
-		{
-			label: "delete",
-			key: "delete",
-		},
-	];
-
-	function handleSelect(key) {
-		console.log(key);
-		if (typeof key === "function") {
-			key();
-		}
-	}
 </script>
 
 <style scoped>

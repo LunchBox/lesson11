@@ -7,6 +7,7 @@
 			:showInfo="showInfo"
 			:isSelected="selected(entryItem)"
 			@click="select(entryItem)"
+			@after-submit="$emit('after-submit')"
 		>
 		</ListItem>
 		<EntryItemForm
@@ -38,7 +39,7 @@
 		entry: Entry,
 	});
 
-	props.entry.entryItemIds.forEach((id) => EntryItem.fetch(id));
+	const emit = defineEmits(["after-submit"]);
 
 	const list = computed(() => props.entry.entryItems);
 	const entryItemList = computed(() =>

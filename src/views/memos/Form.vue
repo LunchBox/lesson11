@@ -91,5 +91,6 @@
 <style>
 	.CodeMirror {
 		font-size: 13px;
+		height: auto;
 	}
 </style>

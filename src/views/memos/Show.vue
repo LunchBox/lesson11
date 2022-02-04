@@ -7,8 +7,8 @@
 		/>
 		<div v-else class="memo">
 			<div v-if="memo.isMarkdown" v-html="mdContent"></div>
-			<div v-else>
-				<pre><code>{{ memo.content }}</code></pre>
+			<div v-else v-highlight>
+				<pre><code class="language-javascript">{{ memo.content }}</code></pre>
 			</div>
 		</div>
 	</div>
@@ -54,7 +54,19 @@
 </script>
 
 <style scoped>
-	::v-deep p {
+	:deep(p) {
 		margin: 0.5em 0;
+	}
+
+	pre {
+		padding: 0;
+	}
+
+	.hljs {
+		background: transparent;
+	}
+
+	pre code.hljs {
+		padding: 0.5em;
 	}
 </style>

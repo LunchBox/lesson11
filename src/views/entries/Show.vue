@@ -143,5 +143,7 @@
 		height: 2.5em;
 		border: none;
 		overflow: hidden;
+
+		display: none;
 	}
 </style>

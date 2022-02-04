@@ -5,7 +5,12 @@
 			:memo="memo"
 			@after-submit="$emit('after-submit')"
 		/>
-		<div v-else v-html="content" class="memo"></div>
+		<div v-else class="memo">
+			<div v-if="memo.isMarkdown" v-html="mdContent"></div>
+			<div v-else>
+				<pre><code>{{ memo.content }}</code></pre>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -39,7 +44,7 @@
 		editing: Boolean,
 	});
 
-	const content = computed(() => {
+	const mdContent = computed(() => {
 		if (props.memo) {
 			return marked(props.memo.content);
 		} else {

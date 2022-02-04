@@ -45,7 +45,30 @@
 	}
 
 	async function onSubmit() {
-		const memo = new Memo({ content: formData.content });
+		let text = formData.content.trim();
+		let contentType = "markdown";
+
+		const CONTENT_TYPE = ["markdown", "md", "javascript", "js"];
+
+		const CONTENT_TYPE_ALIAS = {
+			md: "markdown",
+			js: "javascript",
+		};
+
+		if (text.startsWith("/")) {
+			const res = text.match(/^\/(.*)\s+(.*)/i);
+			if (CONTENT_TYPE.includes(res[1].toLowerCase())) {
+				contentType = res[1].toLowerCase();
+
+				if (CONTENT_TYPE_ALIAS[contentType]) {
+					contentType = CONTENT_TYPE_ALIAS[contentType];
+				}
+
+				text = res[2];
+			}
+		}
+
+		const memo = new Memo({ content: text, contentType });
 		await memo.save();
 
 		const entryItem = new EntryItem(formData);

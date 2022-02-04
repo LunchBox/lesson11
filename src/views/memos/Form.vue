@@ -1,10 +1,9 @@
 <template>
-	<form @submit.prevent="onSubmit">
+	<form @submit.prevent="onSubmit" @keydown.enter.ctrl="onSubmit">
 		<textarea
 			ref="inputField"
 			v-model="formData.content"
 			autofocus
-			@keydown.enter.ctrl="onSubmit"
 		></textarea>
 	</form>
 </template>
@@ -13,6 +12,10 @@
 	import { ref, reactive, watch, onMounted, nextTick } from "vue";
 	import Memo from "@/models/memo.js";
 	import autosize from "autosize";
+	import CodeMirror from "codemirror";
+
+	import "codemirror/lib/codemirror.css";
+	import "codemirror/mode/javascript/javascript.js";
 
 	const props = defineProps({
 		memo: Memo,
@@ -20,10 +23,30 @@
 
 	const emit = defineEmits(["after-submit", "after-update"]);
 
+	const cmOption = {
+		mode: "javascript",
+		line: true,
+		lineNumbers: true,
+		lineWrapping: true,
+		indentUnit: 2,
+		tabSize: 2,
+		indentWithTabs: true,
+		paste: function (event) {
+			console.log("are you fucking kiding me???");
+		},
+	};
+
 	const inputField = ref(null);
 	onMounted(() => {
 		nextTick(() => {
-			autosize(inputField.value);
+			if (!props.memo.isMarkdown) {
+				const editor = CodeMirror.fromTextArea(inputField.value, cmOption);
+				editor.on("change", (cm) => {
+					formData.content = cm.getValue();
+				});
+			} else {
+				autosize(inputField.value);
+			}
 		});
 	});
 
@@ -62,5 +85,11 @@
 		height: 1.6em;
 		resize: none;
 		margin: 0.5em 0;
+	}
+</style>
+
+<style>
+	.CodeMirror {
+		font-size: 13px;
 	}
 </style>

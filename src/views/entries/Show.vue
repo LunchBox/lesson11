@@ -1,7 +1,7 @@
 <template>
 	<div v-if="entry">
 		<div style="margin-bottom: 1em">
-			<n-button @click="showInfo = !showInfo" text>Toggle Info</n-button>
+			<a @click.prevent="showInfo = !showInfo">Toggle Info</a> &middot;
 		</div>
 
 		<div v-if="showInfo">
@@ -16,7 +16,6 @@
 
 <script setup>
 	import { ref, computed, toRef } from "vue";
-	import { NButton } from "naive-ui";
 	import { useRoute } from "vue-router";
 
 	import Entry from "@/models/entry.js";
@@ -44,6 +43,7 @@
 		line-height: 1.35;
 		border-radius: 2px;
 		padding: 0.5em;
+		margin: 0.5em 0;
 	}
 
 	code {
@@ -64,7 +64,7 @@
 </style>
 
 <style scoped>
-	::v-deep textarea {
+	:deep(textarea) {
 		width: 100%;
 	}
 </style>

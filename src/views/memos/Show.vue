@@ -8,7 +8,7 @@
 		<div v-else class="memo">
 			<div v-if="memo.isMarkdown" v-html="mdContent"></div>
 			<div v-else v-highlight>
-				<pre><code class="language-javascript">{{ memo.content }}</code></pre>
+				<pre><code :class="`language-${memo.contentType}`">{{ memo.content }}</code></pre>
 			</div>
 		</div>
 	</div>
@@ -59,14 +59,17 @@
 	}
 
 	pre {
-		padding: 0;
+		/* padding: 0; */
 	}
 
 	.hljs {
 		background: transparent;
+		font-family: monospace;
+		font-size: 13px;
 	}
 
 	pre code.hljs {
 		padding: 0.5em;
+		padding: 0;
 	}
 </style>

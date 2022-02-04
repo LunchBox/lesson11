@@ -48,7 +48,7 @@
 		let text = formData.content.trim();
 		let contentType = "markdown";
 
-		const CONTENT_TYPE = ["markdown", "md", "javascript", "js"];
+		const CONTENT_TYPE = ["markdown", "md", "javascript", "js", "html", "css"];
 
 		const CONTENT_TYPE_ALIAS = {
 			md: "markdown",

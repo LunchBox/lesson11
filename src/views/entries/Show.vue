@@ -1,6 +1,7 @@
 <template>
 	<div v-if="entry">
 		<div style="margin-bottom: 1em">
+			<router-link to="/entries">Entries</router-link> &middot;
 			<a @click.prevent="showInfo = !showInfo">Toggle Info</a> &middot;
 		</div>
 

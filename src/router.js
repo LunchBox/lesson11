@@ -5,6 +5,7 @@ import EntryShow from "@/views/entries/Show.vue";
 
 const routes = [
 	{ path: "/", component: Dashboard },
+	{ path: "/entries", component: Dashboard },
 	{ path: "/entries/:id", component: EntryShow },
 ];
 

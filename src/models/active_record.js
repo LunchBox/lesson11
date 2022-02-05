@@ -1,114 +1,127 @@
-import { reactive } from "vue"; 
+import { reactive } from "vue";
 import propertyFilter from "../utils/property_filter.js";
 import axios from "axios";
-import _ from 'lodash';
-
+import _ from "lodash";
 
 const CALLBACKS = [
-  "beforeCreate",
-  "afterCreate",
+	"beforeCreate",
+	"afterCreate",
 
-  "beforeSave",
-  "afterSave",
+	"beforeSave",
+	"afterSave",
 
-  "beforeUpdate",
-  "afterUpdate",
+	"beforeUpdate",
+	"afterUpdate",
 
-  "beforeDestroy",
-  "afterDestroy",
+	"beforeDestroy",
+	"afterDestroy",
 ];
-
-
 
 export default class ActiveRecord {
 	static get modelKey() {
 		throw new Error("override this method to provide the model Key");
 	}
 
-  static attributes = {}; 
+	static attributes = {};
 
-  static attrsAccssor = [];
+	static attrsAccssor = [];
 
-  // local cache
-  static get storage(){
-    if (!this._storage){
-      this._storage = reactive({}); 
-    }
+	static defaultExtension = ".json";
 
-    return this._storage;
-  }
+	static get defaultExt() {
+		return this.defaultExtension;
+	}
+
+	// local cache
+	static get storage() {
+		if (!this._storage) {
+			this._storage = reactive({});
+		}
+
+		return this._storage;
+	}
 
 	static async fetchAll() {
 		try {
-			const res = await axios.get(`/api/${this.modelKey}`);
+			const res = await axios.get(
+				`/api/${this.modelKey}${this.defaultExt}`,
+			);
 
-      const jobs = res.data.map(id => this.fetch(id));
-      await Promise.all(jobs);
+			const jobs = res.data.map((id) => this.fetch(id));
+			await Promise.all(jobs);
 		} catch (err) {
 			// just do nothing.
 		}
 	}
 
-  static _regModelData(id, model){
-    model.id = id; 
+	static _regModelData(id, model) {
+		model.id = id;
 
-    this.storage[id] = model;
-    return model;
-  }
+		this.storage[id] = model;
+		return model;
+	}
 
-	static async fetch(id){
-    const res = await axios.get(`/api/${this.modelKey}/${id}`);
-    
-    return this._regModelData(id, this.build(res.data));
+	static async fetch(id) {
+		const res = await axios.get(
+			`/api/${this.modelKey}/${id}${this.defaultExt}`,
+		);
+
+		return this._regModelData(id, this.build(res.data));
 	}
 
 	static async create(model) {
 		const data = JSON.stringify(model, propertyFilter);
-		const res = await axios.post(`/api/${this.modelKey}`, data, {
-			headers: { "Content-Type": "application/json" },
-		});
+		const res = await axios.post(
+			`/api/${this.modelKey}${this.defaultExt}`,
+			data,
+			{
+				headers: { "Content-Type": "text/plain" },
+			},
+		);
 		const { id } = res.data;
 
-    return this._regModelData(id, model);
+		return this._regModelData(id, model);
 	}
 
 	static async update(model, attrs) {
 		const { id, ...rest } = model;
 		const data = JSON.stringify(attrs, propertyFilter);
-		const res = await axios.put(`/api/${this.modelKey}/${id}`, data, {
-			headers: { "Content-Type": "application/json" },
-		});
+		const res = await axios.put(
+			`/api/${this.modelKey}/${id}${this.defaultExt}`,
+			data,
+			{
+				headers: { "Content-Type": "text/plain" },
+			},
+		);
 
-    return this._regModelData(id, this.build(res.data));
+		return this._regModelData(id, this.build(res.data));
 	}
 
 	static async destroy(id) {
-		await axios.delete(`/api/${this.modelKey}/${id}`);
-    delete this.storage[id];
+		await axios.delete(`/api/${this.modelKey}/${id}${this.defaultExt}`);
+		delete this.storage[id];
 	}
-
 
 	static build(values = {}) {
 		return new this(values);
 	}
 
-
 	static get all() {
-    return Object.values(this.storage);
+		return Object.values(this.storage);
 	}
 
 	static find(id) {
-    return this.storage[id];
+		return this.storage[id];
 	}
 
 	static where(conds = {}) {
-    let res = this.all;
+		let res = this.all;
 
-    for (let key in conds) {
-      res = res.filter((model) => model[key] === conds[key]);
-    }
+		for (let key in conds) {
+			res = res.filter((model) => model[key] === conds[key]);
+		}
 
-    return res;
+		return res;
 	}
 
 	constructor(attrs = {}) {
@@ -118,13 +131,13 @@ export default class ActiveRecord {
 			this[key] = val === undefined ? config[key]?.default || null : val;
 		}
 
-    this.constructor.attrsAccssor.forEach((key) => {
-      this[key] = attrs[key] || null;
-    });
+		this.constructor.attrsAccssor.forEach((key) => {
+			this[key] = attrs[key] || null;
+		});
 	}
 
 	async create() {
-    await this.beforeSave();
+		await this.beforeSave();
 		await this.beforeCreate();
 
 		await this.constructor.create(this);
@@ -144,13 +157,13 @@ export default class ActiveRecord {
 		await this.afterSave();
 	}
 
-  async save(){
-    if ( this.id ) {
-      await this.update();
-    } else {
-      await this.create();
-    }
-  }
+	async save() {
+		if (this.id) {
+			await this.update();
+		} else {
+			await this.create();
+		}
+	}
 
 	async destroy() {
 		await this.beforeDestroy();
@@ -160,127 +173,140 @@ export default class ActiveRecord {
 		await this.afterDestroy();
 	}
 
+	static async actCallback(callbackType, model) {
+		const cName = `_${callbackType}`;
 
-  static async actCallback(callbackType, model){
-    const cName = `_${callbackType}`;
-    
-    if (!this[cName]){
-      return null;
-    }
+		if (!this[cName]) {
+			return null;
+		}
 
-    const jobs = this[cName].map(cb => cb.bind(model)());
-    await Promise.all(jobs);
-  }
+		const jobs = this[cName].map((cb) => cb.bind(model)());
+		await Promise.all(jobs);
+	}
 
-  // cb must be async 
-  static regCallback(callbackType, func){
-    const cName = `_${callbackType}`;
-    if (!this[cName]){
-      this[cName] = [];
-    }
-    this[cName].push(func);
-  }
+	// cb must be async
+	static regCallback(callbackType, func) {
+		const cName = `_${callbackType}`;
+		if (!this[cName]) {
+			this[cName] = [];
+		}
+		this[cName].push(func);
+	}
 
-  // associations
-  static hasMany(associationName, config = { className: null, foreignKey: null, dependency: "nullify" }){
-    if(!config.className || !config.foreignKey){
-      throw new Error("className is required");
-    }
+	// associations
+	static hasMany(
+		associationName,
+		config = { className: null, foreignKey: null, dependency: "nullify" },
+	) {
+		if (!config.className || !config.foreignKey) {
+			throw new Error("className is required");
+		}
 
-    Object.defineProperty(this.prototype, associationName, {
-      get: function(){
-        if (config.collectionKey) {
-          return this[config.collectionKey].map(id => config.className.find(id));
-        }
+		Object.defineProperty(this.prototype, associationName, {
+			get: function () {
+				if (config.collectionKey) {
+					return this[config.collectionKey].map((id) =>
+						config.className.find(id),
+					);
+				}
 
-        return config.className.where({ [this[config.foreignKey]]: this.id });
-      }
-    });
+				return config.className.where({
+					[this[config.foreignKey]]: this.id,
+				});
+			},
+		});
 
-    CALLBACKS.forEach(callbackType => {
-      this.regCallback(callbackType, async function(){
-        // console.log(callbackType, this);
+		CALLBACKS.forEach((callbackType) => {
+			this.regCallback(callbackType, async function () {
+				// console.log(callbackType, this);
 
-        if (config[callbackType]){
-          await config[callbackType].bind(this)(this[associationName]);
-        }
-      });
-    });
-  }
+				if (config[callbackType]) {
+					await config[callbackType].bind(this)(
+						this[associationName],
+					);
+				}
+			});
+		});
+	}
 
-  static belongsTo(associationName, config = { className: null, foreignKey: null }){
-    if(!config.className || !config.foreignKey){
-      throw new Error("className is required");
-    }
+	static belongsTo(
+		associationName,
+		config = { className: null, foreignKey: null },
+	) {
+		if (!config.className || !config.foreignKey) {
+			throw new Error("className is required");
+		}
 
-    Object.defineProperty(this.prototype, associationName, {
-      get: function(){
-        if (!this[config.foreignKey]){
-          return null;
-        }
-        return config.className.find(this[config.foreignKey]);
-      },
-      set: function(obj){
-        this[config.foreignKey] = obj.id;
-      }
-    });
+		Object.defineProperty(this.prototype, associationName, {
+			get: function () {
+				if (!this[config.foreignKey]) {
+					return null;
+				}
+				return config.className.find(this[config.foreignKey]);
+			},
+			set: function (obj) {
+				this[config.foreignKey] = obj.id;
+			},
+		});
 
-    CALLBACKS.forEach(callbackType => {
-      this.regCallback(callbackType, async function(){
-        // console.log(callbackType, this);
+		CALLBACKS.forEach((callbackType) => {
+			this.regCallback(callbackType, async function () {
+				// console.log(callbackType, this);
 
-        const association = await config.className.fetch(this[config.foreignKey]);
+				const association = await config.className.fetch(
+					this[config.foreignKey],
+				);
 
-        if (config[callbackType]){
-          await config[callbackType].bind(this)(association);
-        }
-      });
-    });
-  }
-  
-  static hasOne(associationName, config = { allowItemTypes: {} }) {
-     
-    const cName = _.capitalize(associationName);
-    const typeName = `${associationName}Type`;
-    const idName = `${associationName}Id`;
+				if (config[callbackType]) {
+					await config[callbackType].bind(this)(association);
+				}
+			});
+		});
+	}
 
-    const ITEM_TYPES = config.allowItemTypes;
+	static hasOne(associationName, config = { allowItemTypes: {} }) {
+		const cName = _.capitalize(associationName);
+		const typeName = `${associationName}Type`;
+		const idName = `${associationName}Id`;
 
-    Object.defineProperty(this.prototype, associationName, {
-      get: function(){
-        if (!this[idName]){
-          return null;
-        }
+		const ITEM_TYPES = config.allowItemTypes;
 
-        return ITEM_TYPES[this[typeName]].find(this[idName]);
-      },
-      set: function(obj){
-        this[typeName] = obj.constructor.name;
-        this[idName] = obj.id;
-      }
-    });
+		Object.defineProperty(this.prototype, associationName, {
+			get: function () {
+				if (!this[idName]) {
+					return null;
+				}
 
-    this.prototype[`fetch${cName}`] = async function(){
-      return await ITEM_TYPES[this[typeName]].fetch(this[idName]);
-    };
+				return ITEM_TYPES[this[typeName]].find(this[idName]);
+			},
+			set: function (obj) {
+				this[typeName] = obj.constructor.name;
+				this[idName] = obj.id;
+			},
+		});
 
-    CALLBACKS.forEach(callbackType => {
-      this.regCallback(callbackType, async function(){
-        // console.log(callbackType, this);
+		this.prototype[`fetch${cName}`] = async function () {
+			return await ITEM_TYPES[this[typeName]].fetch(this[idName]);
+		};
 
-        const association = await config.allowItemTypes[this[typeName]].fetch(this[idName]);
+		CALLBACKS.forEach((callbackType) => {
+			this.regCallback(callbackType, async function () {
+				// console.log(callbackType, this);
 
-        if (config[callbackType]){
-          await config[callbackType].bind(this)(association);
-        }
-      });
-    });
-  }
+				const association = await config.allowItemTypes[
+					this[typeName]
+				].fetch(this[idName]);
+
+				if (config[callbackType]) {
+					await config[callbackType].bind(this)(association);
+				}
+			});
+		});
+	}
 }
 
-
-CALLBACKS.forEach(callbackType => {
-  ActiveRecord.prototype[callbackType] = async function(){
-    await this.constructor.actCallback(callbackType, this);
-  }
+CALLBACKS.forEach((callbackType) => {
+	ActiveRecord.prototype[callbackType] = async function () {
+		await this.constructor.actCallback(callbackType, this);
+	};
 });

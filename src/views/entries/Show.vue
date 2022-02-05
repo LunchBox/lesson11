@@ -22,6 +22,7 @@
 <script setup>
 	import { ref, computed, onBeforeUnmount } from "vue";
 	import { useRoute } from "vue-router";
+	import { js_beautify } from "js-beautify";
 
 	import Entry from "@/models/entry.js";
 	import EntryItem from "@/models/entry_item.js";
@@ -57,8 +58,8 @@
 			.map((memo) => ["", `$_pos = "${memo.id}"`, memo.content].join("\r\n"))
 			.join("\r\n");
 
-		// console.log(script);
-		const content = "<scr" + "ipt>\r\n" + script + "\r\n</scr" + "ipt>";
+		const content =
+			"<scr" + "ipt>\r\n" + js_beautify(script) + "\r\n</scr" + "ipt>";
 		postMessage(content);
 	}
 

@@ -57,7 +57,7 @@
 		};
 
 		if (text.startsWith("/")) {
-			const res = text.match(/^\/(.*)\s+(.*)/i);
+			const res = text.match(/^\/([^\s]+)\s+([\S\s]*)/im);
 			if (CONTENT_TYPE.includes(res[1].toLowerCase())) {
 				contentType = res[1].toLowerCase();
 

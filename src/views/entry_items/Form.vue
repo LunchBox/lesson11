@@ -25,6 +25,7 @@
 	onMounted(() => {
 		nextTick(() => {
 			autosize(inputField.value);
+			inputField.value.focus();
 		});
 	});
 

@@ -11,8 +11,6 @@
 
 		<h2>{{ entry.title }}</h2>
 
-		<iframe src="/debug.html" ref="debugFrame"></iframe>
-
 		<EntryItemList
 			:entry="entry"
 			:showInfo="showInfo"
@@ -59,8 +57,9 @@
 			.map((memo) => ["", `$_pos = "${memo.id}"`, memo.content].join("\r\n"))
 			.join("\r\n");
 
-		console.log(script);
-		postMessage("script", script);
+		// console.log(script);
+		const content = "<scr" + "ipt>\r\n" + script + "\r\n</scr" + "ipt>";
+		postMessage(content);
 	}
 
 	const runtimeHandler = (event) => {
@@ -90,15 +89,16 @@
 	const showInfo = ref(false);
 	console.log(entry);
 
-	const debugFrame = ref(null);
-	function postMessage(type, data) {
-		debugFrame.value.contentWindow.postMessage(
-			JSON.stringify({
-				type: "script",
-				data,
-			}),
-			"*"
-		);
+	function postMessage(content) {
+		console.log(content);
+		document.querySelectorAll(".debug-frame").forEach((elem) => elem.remove());
+		const iframe = document.createElement("iframe");
+		iframe.classList.add("debug-frame");
+		document.body.append(iframe);
+		const doc = iframe.contentWindow.document;
+		doc.open();
+		doc.writeln(content);
+		doc.close();
 	}
 </script>
 
@@ -138,8 +138,9 @@
 	:deep(textarea) {
 		width: 100%;
 	}
-
-	iframe {
+</style>
+<style>
+	iframe.debug-frame {
 		width: 100%;
 		height: 2.5em;
 		border: none;

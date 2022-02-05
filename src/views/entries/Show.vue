@@ -53,9 +53,9 @@
 
 		let script = "let $_pos = null; \r\n";
 		script +=
-			"console.log = function(...args){ parent.postMessage({ type: 'debug', id: $_pos, data: args}) } \r\n";
+			"console.log = function(...args){ parent.postMessage([$_pos, 'debug', args]) } \r\n";
 		script += scriptMemos
-			.map((memo) => ["", `$_pos = "${memo.id}"`, memo.content].join("\r\n"))
+			.map((memo) => ["", `$_pos = "${memo.id}";`, memo.content].join("\r\n"))
 			.join("\r\n");
 
 		const content =
@@ -64,10 +64,11 @@
 	}
 
 	const runtimeHandler = (event) => {
-		if (typeof event.data === "object" && event.data.type === "debug") {
-			const { id, type, data } = event.data;
+		if (Array.isArray(event.data) && event.data[1] === "debug") {
+			const [id, dataType, data] = event.data;
 
 			console.log(id, data);
+			// data always be a array, since we allow unlimited arguments for console.log
 
 			const memo = Memo.find(id);
 			if (memo) {

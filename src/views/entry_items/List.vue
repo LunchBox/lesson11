@@ -64,7 +64,7 @@
 		return entryItem instanceof EntryItem;
 	}
 
-	const formIdx = ref(0);
+	const formIdx = ref(null);
 
 	function setFormUnder(entryItem) {
 		formIdx.value = list.value.indexOf(entryItem);

@@ -180,7 +180,7 @@ export default class ActiveRecord {
 			return null;
 		}
 
-		const jobs = this[cName].map((cb) => cb.bind(model)());
+		const jobs = this[cName].map((cb) => cb.bind(model)(model));
 		await Promise.all(jobs);
 	}
 

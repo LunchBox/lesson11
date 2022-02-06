@@ -3,7 +3,6 @@ import EntryItem from "./entry_item.js";
 import Memo from "./memo.js";
 
 // Entry
-
 Entry.hasMany("entryItems", {
 	className: EntryItem,
 	foreignKey: "entryId",
@@ -11,7 +10,6 @@ Entry.hasMany("entryItems", {
 });
 
 // Entry Item
-
 EntryItem.belongsTo("entry", {
 	className: Entry,
 	foreignKey: "entryId",

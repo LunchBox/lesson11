@@ -9,8 +9,15 @@
 			<div v-if="memo.isMarkdown" v-html="mdContent"></div>
 			<div v-else v-highlight>
 				<pre><code :class="`language-${memo.contentType}`">{{ memo.content }}</code></pre>
-				<div style="margin-bottom: 1em">
-					{{ memo.$result }}
+				<div
+					v-if="memo.contentType === 'html'"
+					v-html="memo.content"
+				></div>
+				<div
+					v-if="memo.contentType === 'javascript'"
+					style="margin-bottom: 1em"
+				>
+					&gt; {{ memo.$result }}
 				</div>
 			</div>
 		</div>

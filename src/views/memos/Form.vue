@@ -1,10 +1,6 @@
 <template>
 	<form @submit.prevent="onSubmit" @keydown.enter.ctrl="onSubmit">
-		<textarea
-			ref="inputField"
-			v-model="formData.content"
-			autofocus
-		></textarea>
+		<textarea ref="inputField" v-model="formData.content"></textarea>
 	</form>
 </template>
 

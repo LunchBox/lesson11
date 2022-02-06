@@ -8,7 +8,7 @@
 				@click.stop="showMenus = false"
 			>
 				<ul>
-					<li>
+					<li @click.prevent.stop>
 						<span> {{ eiMark }} </span>
 					</li>
 					<li>

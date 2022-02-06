@@ -17,7 +17,7 @@ export default class Memo extends ActiveRecord {
 		return false;
 	}
 
-	async fileize() {
+	get cacheFilename() {
 		const extMapping = {
 			javascript: ".js",
 			css: ".css",
@@ -27,7 +27,11 @@ export default class Memo extends ActiveRecord {
 
 		const ext = extMapping[this.contentType] || ".md";
 		const filename = this.id + ext;
+		return filename;
+	}
 
+	async fileize() {
+		const filename = this.cacheFilename;
 		const res = await axios.put(
 			`/api/${this.constructor.modelKey}_cache/${filename}`,
 			this.content,

@@ -2,6 +2,7 @@ import { reactive } from "vue";
 import propertyFilter from "../utils/property_filter.js";
 import axios from "axios";
 import _ from "lodash";
+import path from "path";
 
 const CALLBACKS = [
 	"beforeCreate",
@@ -41,13 +42,14 @@ export default class ActiveRecord {
 		return this._storage;
 	}
 
-	static async fetchAll() {
+	static async fetchAll(ext = ".json") {
 		try {
-			const res = await axios.get(
-				`/api/${this.modelKey}${this.defaultExt}`,
-			);
+			const res = await axios.get(`/api/${this.modelKey}${ext}`);
 
-			const jobs = res.data.map((id) => this.fetch(id));
+			const jobs = res.data.map((fileName) => {
+				const id = fileName.split(ext)[0];
+				return this.fetch(id);
+			});
 			await Promise.all(jobs);
 		} catch (err) {
 			// just do nothing.
@@ -61,10 +63,8 @@ export default class ActiveRecord {
 		return model;
 	}
 
-	static async fetch(id) {
-		const res = await axios.get(
-			`/api/${this.modelKey}/${id}${this.defaultExt}`,
-		);
+	static async fetch(id, ext = ".json") {
+		const res = await axios.get(`/api/${this.modelKey}/${id}${ext}`);
 
 		return this._regModelData(id, this.build(res.data));
 	}

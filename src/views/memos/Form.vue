@@ -89,6 +89,7 @@
 	.path {
 		font-style: italic;
 		font-size: smaller;
+		margin-bottom: 1em;
 	}
 </style>
 

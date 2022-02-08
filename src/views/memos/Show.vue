@@ -75,6 +75,7 @@
 
 	.output {
 		word-break: break-all;
+		margin: 0.5em 0;
 	}
 
 	.hljs {

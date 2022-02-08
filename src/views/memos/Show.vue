@@ -13,11 +13,16 @@
 					v-if="memo.contentType === 'html'"
 					v-html="memo.content"
 				></div>
-				<div
-					v-if="memo.contentType === 'javascript'"
-					style="margin-bottom: 1em"
-				>
-					&gt; {{ memo.$result }}
+				<div v-if="memo.contentType === 'javascript'" class="output">
+					<div v-if="memo.$result?.type === 'log'">
+						&gt; {{ truncatedResult }}
+					</div>
+					<div v-else-if="memo.$result?.type === 'image'">
+						<img
+							:src="memo.$result.data"
+							:alt="`${memo.id}_output.png`"
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -61,6 +66,14 @@
 			return "- BLANK -";
 		}
 	});
+
+	const truncatedResult = computed(() => {
+		let content = JSON.stringify(props.memo.$result.data);
+		if (content.length >= 140) {
+			content = content.slice(0, 140) + "...";
+		}
+		return content;
+	});
 </script>
 
 <style scoped>
@@ -68,8 +81,8 @@
 		margin: 0.5em 0;
 	}
 
-	pre {
-		/* padding: 0; */
+	.output {
+		word-break: break-all;
 	}
 
 	.hljs {

@@ -15,7 +15,7 @@
 				></div>
 				<div v-if="memo.contentType === 'javascript'" class="output">
 					<div v-if="memo.$result?.type === 'log'">
-						&gt; {{ truncatedResult }}
+						&gt; {{ memo.$result.data }}
 					</div>
 					<div v-else-if="memo.$result?.type === 'image'">
 						<img
@@ -65,14 +65,6 @@
 		} else {
 			return "- BLANK -";
 		}
-	});
-
-	const truncatedResult = computed(() => {
-		let content = JSON.stringify(props.memo.$result.data);
-		if (content.length >= 140) {
-			content = content.slice(0, 140) + "...";
-		}
-		return content;
 	});
 </script>
 

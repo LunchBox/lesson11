@@ -5,7 +5,6 @@
 				ref="inputField"
 				v-model="formData.content"
 				placeholder="Content"
-				autofocus
 				@keydown.enter.ctrl="onSubmit"
 			></textarea>
 		</form>

@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-	import { ref, computed, watch } from "vue";
+	import { ref, computed, watch, onBeforeUnmount } from "vue";
 	import Entry from "@/models/entry.js";
 	import EntryItem from "@/models/entry_item.js";
 
@@ -67,6 +67,46 @@
 		const tmp = list.value.filter((ei) => selected.includes(ei));
 		selection.value = tmp;
 	}
+
+	const keydownHandler = async (e) => {
+		console.log(e.code);
+		if (e.code === "Escape") {
+			selection.value.splice(0);
+		}
+		if (e.code === "Tab" && selection.value.length > 0) {
+			if (window.confirm("Are you sure to split these items?")) {
+				e.preventDefault();
+
+				const eis = selection.value;
+				const eiIds = eis.map((ei) => ei.id);
+				const entry = new Entry({ title: "Untitled" });
+				await entry.create();
+
+				const jobs = eis.map((ei) => ei.update({ entryId: entry.id }));
+				await Promise.all(jobs);
+
+				await entry.update({ entryItemIds: eiIds });
+
+				const pos = props.entry.entryItemIds.indexOf(eiIds[0]);
+
+				const _eiIds = props.entry.entryItemIds.filter(
+					(id) => !eiIds.includes(id)
+				);
+				props.entry.update({ entryItemIds: _eiIds });
+
+				const entryItem = new EntryItem({});
+				entryItem.item = entry;
+				entryItem.entryId = props.entry.id;
+
+				entryItem.$position = pos - 1;
+				await entryItem.create();
+			}
+		}
+	};
+	document.addEventListener("keydown", keydownHandler);
+	onBeforeUnmount(() => {
+		document.removeEventListener("keydown", keydownHandler);
+	});
 
 	function selected(entryItem) {
 		return selection.value.includes(entryItem);

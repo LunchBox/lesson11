@@ -55,13 +55,15 @@
 	});
 
 	const props = defineProps({
-		memo: Memo,
+		item: Memo,
 		editing: Boolean,
 	});
 
+	const memo = computed(() => props.item);
+
 	const mdContent = computed(() => {
-		if (props.memo) {
-			return marked(props.memo.content);
+		if (memo.value) {
+			return marked(memo.value.content);
 		} else {
 			return "- BLANK -";
 		}

@@ -8,9 +8,6 @@
 				@click.stop="showMenus = false"
 			>
 				<ul>
-					<li @click.prevent.stop>
-						<span> {{ eiMark }} </span>
-					</li>
 					<li>
 						<a @click="edit">Edit</a>
 					</li>
@@ -22,8 +19,8 @@
 		</div>
 		<div class="entry-item__content" @dblclick.prevent="edit">
 			<component
-				:is="MemoView"
-				:memo="entryItem.item"
+				:is="componentMap[entryItem.itemType]"
+				:item="entryItem.item"
 				:editing="editing"
 				@after-submit="afterSubmit"
 			>
@@ -34,34 +31,21 @@
 
 <script setup>
 	import { ref, computed, watch } from "vue";
-	import { marked } from "marked";
 
 	import Entry from "@/models/entry.js";
 	import EntryItem from "@/models/entry_item.js";
 
 	import EntryItemForm from "./Form.vue";
 
-	import MemoView from "../memos/Show.vue";
+	import MemoListItem from "../memos/Show.vue";
+	import EntryListItem from "../entries/ListItem.vue";
 
-	marked.setOptions({
-		renderer: new marked.Renderer(),
-		// highlight: function (code, lang) {
-		// 	const hljs = require("highlight.js");
-		// 	const language = hljs.getLanguage(lang) ? lang : "plaintext";
-		// 	return hljs.highlight(code, { language }).value;
-		// },
-		langPrefix: "hljs language-", // highlight.js css expects a top-level 'hljs' class.
-		pedantic: false,
-		gfm: true,
-		breaks: true,
-		sanitize: false,
-		smartLists: true,
-		smartypants: false,
-		xhtml: false,
-	});
+	const componentMap = {
+		Memo: MemoListItem,
+		Entry: EntryListItem,
+	};
 
 	const props = defineProps({
-		showInfo: Boolean,
 		isSelected: Boolean,
 		entry: Entry,
 		entryItem: EntryItem,
@@ -76,27 +60,6 @@
 				showMenus.value = false;
 			}
 		}
-	);
-
-	// watch(
-	// 	() => props.entryItem,
-	// 	(newVal) => {
-	// 		if (newVal) {
-	// 			newVal.fetchItem();
-	// 		}
-	// 	},
-	// 	{ immediate: true }
-	// );
-
-	const content = ref(null);
-	watch(
-		() => props.entryItem.item,
-		(newVal) => {
-			if (newVal) {
-				content.value = marked(newVal.content);
-			}
-		},
-		{ immediate: true }
 	);
 
 	const showMenus = ref(false);
@@ -120,10 +83,6 @@
 		editing.value = false;
 		emit("after-submit");
 	}
-
-	const eiMark = computed(() => {
-		return `EI::${props.entryItem.id}`;
-	});
 </script>
 
 <style scoped>

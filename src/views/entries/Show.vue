@@ -1,69 +1,36 @@
 <template>
-	<div v-if="entry">
+	<div v-if="loading">loading...</div>
+	<div v-else>
 		<div style="margin-bottom: 1em">
 			<router-link to="/entries">Entries</router-link> &middot;
-			<a @click.prevent="showInfo = !showInfo">Toggle Info</a> &middot;
-		</div>
-
-		<div v-if="showInfo">
-			{{ entry }}
 		</div>
 
 		<h2>{{ entry.title }}</h2>
 
-		<EntryItemList
-			:entry="entry"
-			:showInfo="showInfo"
-			@after-submit="afterSubmit"
-		/>
+		<EntryItemList :entry="entry" @after-submit="afterSubmit" />
 	</div>
 </template>
 
 <script setup>
 	import { ref, computed, onBeforeUnmount } from "vue";
-	import { useRoute } from "vue-router";
-	import { js_beautify } from "js-beautify";
+	import { useRoute, onBeforeRouteUpdate } from "vue-router";
 
 	import Entry from "@/models/entry.js";
-	import EntryItem from "@/models/entry_item.js";
 	import Memo from "@/models/memo.js";
 
 	import EntryItemList from "../entry_items/List.vue";
 
+	import { loadEntry, syncScript } from "./helper";
+
 	const route = useRoute();
+	const entry = computed(() => Entry.find(route.params.id));
 
-	async function loadEntry(entryId) {
-		const entry = await Entry.fetch(entryId);
+	const loading = ref(true);
+	loadEntry(loading, route.params.id);
 
-		const jobs = entry.entryItemIds.map((id) => EntryItem.fetch(id));
-		const entryItems = await Promise.all(jobs);
-		const memos = await Promise.all(entryItems.map((ei) => ei.fetchItem()));
-
-		syncScript();
-	}
-	loadEntry(route.params.id);
-
-	function syncScript() {
-		const scriptMemos = [];
-		entry.value.entryItems.forEach((ei) => {
-			if (ei.itemType === "Memo" && ei.item.contentType === "javascript") {
-				scriptMemos.push(ei.item);
-			}
-		});
-
-		let script = "let $_pos = null; \r\n";
-		script +=
-			"console.log = function(...args){ parent.postMessage({id: $_pos, type: 'log', data: args}) } \r\n";
-		script +=
-			"console.image = function(imageData){ parent.postMessage({id: $_pos, type: 'image', data: imageData}) } \r\n";
-		script += scriptMemos
-			.map((memo) => ["", `$_pos = "${memo.id}";`, memo.content].join("\r\n"))
-			.join("\r\n");
-
-		const content =
-			"<scr" + "ipt>\r\n" + js_beautify(script) + "\r\n</scr" + "ipt>";
-		postMessage(content);
-	}
+	onBeforeRouteUpdate((to, from) => {
+		loadEntry(loading, to.params.id);
+	});
 
 	const runtimeHandler = (event) => {
 		if (event.data && "type" in event.data) {
@@ -79,24 +46,7 @@
 	});
 
 	function afterSubmit() {
-		syncScript();
-	}
-
-	const entry = computed(() => Entry.find(route.params.id));
-
-	const showInfo = ref(false);
-	console.log(entry);
-
-	function postMessage(content) {
-		console.log(content);
-		document.querySelectorAll(".debug-frame").forEach((elem) => elem.remove());
-		const iframe = document.createElement("iframe");
-		iframe.classList.add("debug-frame");
-		document.body.append(iframe);
-		const doc = iframe.contentWindow.document;
-		doc.open();
-		doc.writeln(content);
-		doc.close();
+		syncScript(entry.value);
 	}
 </script>
 

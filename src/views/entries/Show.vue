@@ -104,15 +104,12 @@
 	pre {
 		white-space: pre-wrap;
 		word-wrap: break-word;
-		font-size: 13px;
-		line-height: 20px;
 		tab-size: 4;
 
 		background: #f5f7fa;
 		line-height: 1.35;
 		border-radius: 2px;
 		padding: 0.5em;
-		margin: 0.5em 0;
 	}
 
 	code {

@@ -6,7 +6,7 @@
 			:class="{ selected: selected(entryItem) }"
 			:showInfo="showInfo"
 			:isSelected="selected(entryItem)"
-			@click="select(entryItem)"
+			@click="select(entryItem, $event)"
 			@after-submit="$emit('after-submit')"
 		>
 		</ListItem>
@@ -48,12 +48,24 @@
 
 	const selection = ref([]);
 
-	function select(entryItem) {
-		selection.value.splice(0);
-
-		if (!selection.value.includes(entryItem)) {
-			selection.value.push(entryItem);
+	function select(entryItem, event) {
+		const selected = selection.value;
+		if (event.ctrlKey || event.metaKey || event.altKey) {
+			const idx = selected.indexOf(entryItem);
+			if (idx > -1) {
+				selected.splice(idx, 1);
+			} else {
+				selected.push(entryItem);
+			}
+		} else {
+			selected.splice(0);
+			if (!selected.includes(entryItem)) {
+				selected.push(entryItem);
+			}
 		}
+
+		const tmp = list.value.filter((ei) => selected.includes(ei));
+		selection.value = tmp;
 	}
 
 	function selected(entryItem) {

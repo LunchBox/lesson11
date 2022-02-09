@@ -64,9 +64,14 @@ export default class ActiveRecord {
 	}
 
 	static async fetch(id, ext = ".json") {
-		const res = await axios.get(`/api/${this.modelKey}/${id}${ext}`);
+		try {
+			const res = await axios.get(`/api/${this.modelKey}/${id}${ext}`);
 
-		return this._regModelData(id, this.build(res.data));
+			return this._regModelData(id, this.build(res.data));
+		} catch (error) {
+			console.log(error);
+			return null;
+		}
 	}
 
 	static async create(model) {

@@ -1,15 +1,23 @@
 <template>
-	<template v-for="(entryItem, idx) in entryItemList" :key="entryItem.id">
+	<template v-for="(entryItem, idx) in list" :key="entryItem?.id">
 		<ListItem
+			v-if="isEntryItem(entryItem)"
 			:entry="entry"
 			:entryItem="entryItem"
 			:class="{ selected: selected(entryItem) }"
-			:showInfo="showInfo"
 			:isSelected="selected(entryItem)"
 			@click="select(entryItem, $event)"
 			@after-submit="$emit('after-submit')"
+			@merge="merge"
+			@delete="deleteEntryItem"
 		>
 		</ListItem>
+		<div v-else>
+			<p>
+				- Error:: entryItem {{ entry.entryItemIds[idx] }} not exist -
+				<a href="" @click.prevent="removeIdCache(idx)">Remove</a>
+			</p>
+		</div>
 		<EntryItemForm
 			v-if="formIdx === idx"
 			:entry="entry"
@@ -35,7 +43,6 @@
 	import ListItem from "./ListItem.vue";
 
 	const props = defineProps({
-		showInfo: Boolean,
 		entry: Entry,
 	});
 
@@ -68,41 +75,85 @@
 		selection.value = tmp;
 	}
 
-	const keydownHandler = async (e) => {
-		console.log(e.code);
+	async function removeIdCache(idx) {
+		const { entry } = props;
+		entry.entryItemIds.splice(idx, 1);
+		entry.update();
+	}
+
+	async function deleteEntryItem(entryItem) {
+		const { entry } = props;
+		const idx = entry.entryItemIds.indexOf(entryItem.id);
+		if (idx > -1) {
+			entry.entryItemIds.splice(idx, 1);
+			await entry.update();
+		}
+		await entryItem.destroy();
+	}
+
+	async function merge(entryItem) {
+		const { entry } = props;
+		if (entryItem.itemType !== "Entry") {
+			return;
+		}
+
+		selection.value.splice(0);
+
+		const pos = entry.entryItemIds.indexOf(entryItem.id);
+
+		const item = await entryItem.fetchItem();
+
+		entry.entryItemIds.splice(pos, 0, ...item.entryItemIds);
+		await entry.update();
+
+		const jobs = item.entryItemIds.map((id) => EntryItem.fetch(id));
+		const entryItems = await Promise.all(jobs);
+
+		const jobs2 = entryItems.map((ei) => ei.update({ entryId: entry.id }));
+		await Promise.all(jobs2);
+
+		await deleteEntryItem(entryItem);
+		await item.destroy();
+
+		selection.value.push(...entryItems);
+	}
+
+	async function splitSelection() {
+		const eis = selection.value;
+		const eiIds = eis.map((ei) => ei.id);
+		const entry = new Entry({ title: "Untitled" });
+		await entry.create();
+
+		const jobs = eis.map((ei) => ei.update({ entryId: entry.id }));
+		await Promise.all(jobs);
+
+		await entry.update({ entryItemIds: eiIds });
+
+		const pos = props.entry.entryItemIds.indexOf(eiIds[0]);
+
+		const _eiIds = props.entry.entryItemIds.filter((id) => !eiIds.includes(id));
+		props.entry.update({ entryItemIds: _eiIds });
+
+		const entryItem = new EntryItem({});
+		entryItem.item = entry;
+		entryItem.entryId = props.entry.id;
+
+		entryItem.$position = pos - 1;
+		await entryItem.create();
+	}
+
+	const keydownHandler = (e) => {
 		if (e.code === "Escape") {
 			selection.value.splice(0);
 		}
 		if (e.code === "Tab" && selection.value.length > 0) {
 			if (window.confirm("Are you sure to split these items?")) {
 				e.preventDefault();
-
-				const eis = selection.value;
-				const eiIds = eis.map((ei) => ei.id);
-				const entry = new Entry({ title: "Untitled" });
-				await entry.create();
-
-				const jobs = eis.map((ei) => ei.update({ entryId: entry.id }));
-				await Promise.all(jobs);
-
-				await entry.update({ entryItemIds: eiIds });
-
-				const pos = props.entry.entryItemIds.indexOf(eiIds[0]);
-
-				const _eiIds = props.entry.entryItemIds.filter(
-					(id) => !eiIds.includes(id)
-				);
-				props.entry.update({ entryItemIds: _eiIds });
-
-				const entryItem = new EntryItem({});
-				entryItem.item = entry;
-				entryItem.entryId = props.entry.id;
-
-				entryItem.$position = pos - 1;
-				await entryItem.create();
+				splitSelection();
 			}
 		}
 	};
+
 	document.addEventListener("keydown", keydownHandler);
 	onBeforeUnmount(() => {
 		document.removeEventListener("keydown", keydownHandler);

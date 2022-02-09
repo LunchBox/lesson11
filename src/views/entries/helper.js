@@ -9,7 +9,7 @@ async function loadEntry(loading, entryId) {
 
 	const jobs = entry.entryItemIds.map((id) => EntryItem.fetch(id));
 	const entryItems = await Promise.all(jobs);
-	const memos = await Promise.all(entryItems.map((ei) => ei.fetchItem()));
+	const memos = await Promise.all(entryItems.map((ei) => ei?.fetchItem()));
 
 	loading.value = false;
 	syncScript(entry);
@@ -18,7 +18,11 @@ async function loadEntry(loading, entryId) {
 function syncScript(entry) {
 	const scriptMemos = [];
 	entry.entryItems.forEach((ei) => {
-		if (ei.itemType === "Memo" && ei.item.contentType === "javascript") {
+		if (
+			ei &&
+			ei.itemType === "Memo" &&
+			ei.item.contentType === "javascript"
+		) {
 			scriptMemos.push(ei.item);
 		}
 	});

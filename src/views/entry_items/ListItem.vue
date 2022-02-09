@@ -12,13 +12,21 @@
 						<a @click="edit">Edit</a>
 					</li>
 					<li>
+						<a @click="merge">Merge</a>
+					</li>
+					<li>
 						<a @click="del">Del</a>
 					</li>
 				</ul>
 			</div>
 		</div>
 		<div class="entry-item__content" @dblclick.prevent="edit">
+			<p v-if="!entryItem.item">
+				- item {{ entryItem.itemType }}::{{ entryItem.itemId }} has been
+				removed -
+			</p>
 			<component
+				v-else
 				:is="componentMap[entryItem.itemType]"
 				:item="entryItem.item"
 				:editing="editing"
@@ -51,7 +59,7 @@
 		entryItem: EntryItem,
 	});
 
-	const emit = defineEmits(["after-submit"]);
+	const emit = defineEmits(["after-submit", "merge", "delete"]);
 
 	watch(
 		() => props.isSelected,
@@ -64,14 +72,18 @@
 
 	const showMenus = ref(false);
 
-	function del() {
-		const entryItem = props.entryItem;
-		const idx = props.entry.entryItemIds.findIndex((id) => id === entryItem.id);
-		if (idx > -1) {
-			props.entry.entryItemIds.splice(idx, 1);
-			props.entry.update();
+	function merge() {
+		const { entryItem } = props;
+		if (entryItem.itemType !== "Entry") {
+			return;
 		}
-		entryItem.destroy();
+
+		emit("merge", entryItem);
+	}
+
+	function del() {
+		const { entryItem } = props;
+		emit("delete", entryItem);
 	}
 
 	const editing = ref(false);

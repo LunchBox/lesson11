@@ -257,12 +257,17 @@
 		border: 1px solid #ccc;
 		border-radius: 2px;
 		padding: 0.5em;
+
+		min-width: 200px;
 	}
 
 	.entry-item__menus .menus ul {
 		list-style: none;
 		margin: 0;
 		padding: 0;
+	}
+	.entry-item__menus .menus ul li {
+		line-height: 30px;
 	}
 
 	.entry-item__menus .menus ul li > * {

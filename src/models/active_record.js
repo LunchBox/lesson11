@@ -48,8 +48,13 @@ export default class ActiveRecord {
 
 			const files = res.data;
 			files.sort((a, b) => {
-				return new Date(a.atime) > new Date(b.atime) ? -1 : 1;
+				return new Date(a.birthtime).getTime() >
+					new Date(b.birthtime).getTime()
+					? -1
+					: 1;
 			});
+
+			console.log(files);
 
 			const jobs = files.map((file) => {
 				const id = file.filename.split(ext)[0];

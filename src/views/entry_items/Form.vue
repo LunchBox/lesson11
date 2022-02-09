@@ -68,11 +68,27 @@
 			}
 		}
 
-		const memo = new Memo({ content: text, contentType });
-		await memo.save();
+		let targetItem = null;
+
+		if (text.startsWith("@")) {
+			const res = text.match(/^\s*@([^\s]{7})/im);
+			const id = res[1];
+			const entry = await Entry.fetch(id);
+			console.log(entry);
+			targetItem = entry;
+		} else {
+			const memo = new Memo({ content: text, contentType });
+			await memo.save();
+			targetItem = memo;
+		}
+
+		if (!targetItem) {
+			console.log("no target item found");
+			return;
+		}
 
 		const entryItem = new EntryItem(formData);
-		entryItem.item = memo;
+		entryItem.item = targetItem;
 		entryItem.entryId = props.entry.id;
 
 		entryItem.$position = props.formIdx;

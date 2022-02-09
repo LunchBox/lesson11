@@ -7,6 +7,12 @@
 
 		<h2>{{ entry.title }}</h2>
 
+		<div class="meta">
+			<span @click.prevent="copyToClipboard">
+				{{ entry.mark }}
+			</span>
+		</div>
+
 		<EntryItemList :entry="entry" @after-submit="afterSubmit" />
 	</div>
 </template>
@@ -48,7 +54,32 @@
 	function afterSubmit() {
 		syncScript(entry.value);
 	}
+
+	function copyToClipboard(event) {
+		const elem = event.target;
+		const range = document.createRange();
+		range.selectNode(elem);
+		window.getSelection().removeAllRanges();
+		window.getSelection().addRange(range);
+		document.execCommand("copy");
+	}
 </script>
+
+<style scoped>
+	:deep(textarea) {
+		width: 100%;
+	}
+	.meta {
+		margin-bottom: 1px;
+	}
+	.meta span {
+		font-family: monospace;
+		color: #999;
+		font-size: smaller;
+
+		cursor: pointer;
+	}
+</style>
 
 <style>
 	pre {
@@ -79,11 +110,7 @@
 	}
 </style>
 
-<style scoped>
-	:deep(textarea) {
-		width: 100%;
-	}
-</style>
+
 <style>
 	iframe.debug-frame {
 		width: 100%;

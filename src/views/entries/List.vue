@@ -1,6 +1,7 @@
 <template>
 	<h2>Entry List</h2>
 
+	<EntryForm />
 	<ul>
 		<li v-for="entry in list" :key="entry.id">
 			<router-link :to="`/entries/${entry.id}`">
@@ -8,17 +9,15 @@
 			</router-link>
 		</li>
 	</ul>
-	<EntryForm />
 </template>
 
 <script setup>
-  import { computed } from "vue";
-  import Entry from "@/models/entry.js";
+	import { computed } from "vue";
+	import Entry from "@/models/entry.js";
 	import EntryForm from "./Form.vue";
 
-  const list = computed(() => Entry.all);
-  Entry.fetchAll();
-  
+	const list = computed(() => Entry.all);
+	Entry.fetchAll();
 </script>
 
 <style>

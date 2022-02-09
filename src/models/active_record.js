@@ -46,8 +46,13 @@ export default class ActiveRecord {
 		try {
 			const res = await axios.get(`/api/${this.modelKey}${ext}`);
 
-			const jobs = res.data.map((fileName) => {
-				const id = fileName.split(ext)[0];
+			const files = res.data;
+			files.sort((a, b) => {
+				return new Date(a.atime) > new Date(b.atime) ? -1 : 1;
+			});
+
+			const jobs = files.map((file) => {
+				const id = file.filename.split(ext)[0];
 				return this.fetch(id);
 			});
 			await Promise.all(jobs);

@@ -1,5 +1,5 @@
 <template>
-	<div style="margin: 0.5em 0">
+	<div style="margin: 1em 0">
 		<form @submit.prevent="onSubmit">
 			<textarea
 				ref="inputField"

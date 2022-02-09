@@ -70,12 +70,13 @@
 
 <style scoped>
 	:deep(p) {
-		margin: 0.5em 0;
+		/* margin: 0.5em 0; */
 	}
 
 	.output {
 		word-break: break-all;
 		margin: 0.5em 0;
+		margin: 1em 0;
 	}
 
 	.hljs {

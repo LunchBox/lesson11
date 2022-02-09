@@ -83,13 +83,12 @@
 	textarea {
 		height: 1.6em;
 		resize: none;
-		margin: 0.5em 0;
 	}
 
 	.path {
 		font-style: italic;
 		font-size: smaller;
-		margin-bottom: 1em;
+		margin-bottom: 0.5em;
 	}
 </style>
 
@@ -97,7 +96,7 @@
 	.CodeMirror {
 		font-size: 13px;
 		border: 1px solid #eee;
-		margin: 0.5em 0;
+		margin: 1em 0;
 		height: auto;
 
 		line-height: 1.35;

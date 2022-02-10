@@ -85,7 +85,7 @@
 	.CodeMirror {
 		font-size: 13px;
 		border: 1px solid #eee;
-		margin: 1em 0;
+		margin: 0.5em 0;
 		height: auto;
 
 		line-height: 1.35;

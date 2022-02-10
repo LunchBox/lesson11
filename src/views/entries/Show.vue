@@ -96,6 +96,9 @@
 		background: #f5f7fa;
 		line-height: 1.35;
 		border-radius: 2px;
+
+		margin: 0.5em 0;
+		padding: 0.5em;
 	}
 
 	code {
@@ -119,6 +122,10 @@
 		font-family: monospace;
 		font-size: 13px;
 	}
+
+	pre code.hljs {
+		padding: 0 !important;
+	}
 </style>
 
 
@@ -130,5 +137,11 @@
 		overflow: hidden;
 
 		display: none;
+	}
+</style>
+
+<style >
+	.list-item p {
+		margin: 0.5em 0;
 	}
 </style>

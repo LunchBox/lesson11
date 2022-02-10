@@ -129,7 +129,7 @@
 
 <style scoped>
 	.pen {
-		margin: 1em 0;
+		margin: 0.5em 0;
 	}
 
 	iframe.debug {
@@ -153,7 +153,7 @@
 		text-decoration: none;
 	}
 	form {
-		margin-bottom: 1em;
+		margin-bottom: 0.5em;
 	}
 
 	.form-item {

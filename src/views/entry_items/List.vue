@@ -216,7 +216,7 @@
 		height: 1rem;
 		border: 1px solid #ccc;
 		border-radius: 2px;
-		margin-top: 0.5rem;
+		margin-top: 1rem;
 		cursor: pointer;
 
 		visibility: hidden;

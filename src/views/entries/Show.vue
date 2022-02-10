@@ -39,7 +39,13 @@
 	});
 
 	const runtimeHandler = (event) => {
-		if (event.data && typeof event.data === "object" && "type" in event.data) {
+		// console.log(event.data);
+		const typeWhitelist = ["log", "image"];
+		if (
+			event.data &&
+			typeof event.data === "object" &&
+			typeWhitelist.includes(event.data.type)
+		) {
 			const { id, type, data } = event.data;
 			const memo = Memo.find(id);
 			memo.$result = { type, data };

@@ -28,29 +28,20 @@
 			ref="iframe"
 			class="debug"
 			:style="{ width: pen.width, height: pen.height }"
+			:src="pen.cacheUrl"
 		></iframe>
 	</div>
 </template>
 
 <script setup>
-	import {
-		ref,
-		computed,
-		onMounted,
-		onBeforeUnmount,
-		nextTick,
-		reactive,
-	} from "vue";
-
 	import Pen from "@/models/pen.js";
-
-	import CodeMirror from "codemirror";
 	import cmOption from "@/utils/codemirror_option.js";
-
+	import CodeMirror from "codemirror";
 	import "codemirror/lib/codemirror.css";
-	import "codemirror/mode/javascript/javascript.js";
-	import "codemirror/mode/htmlmixed/htmlmixed.js";
 	import "codemirror/mode/css/css.js";
+	import "codemirror/mode/htmlmixed/htmlmixed.js";
+	import "codemirror/mode/javascript/javascript.js";
+	import { computed, nextTick, onBeforeUnmount, reactive, ref } from "vue";
 
 	const props = defineProps({
 		item: Pen,
@@ -97,12 +88,14 @@
 	function reset() {
 		formData.content = null;
 		editing.value = null;
-		preview();
 	}
 
 	async function onSubmit() {
 		const { content, width, height } = formData;
 		const data = { [editing.value]: content, width, height };
+
+		pen.value.afterFileize(reloadIframe);
+
 		await pen.value.update(data);
 
 		reset();
@@ -110,11 +103,11 @@
 
 	const iframe = ref(null);
 
-	onMounted(() => {
-		nextTick(() => {
-			preview();
-		});
-	});
+	// onMounted(() => {
+	// 	nextTick(() => {
+	// 		preview();
+	// 	});
+	// });
 
 	// child iframe 返回一些 string 數據就 save 到 pen 中
 	const runtimeHandler = async (event) => {
@@ -128,39 +121,9 @@
 		window.removeEventListener("message", runtimeHandler);
 	});
 
-	function preview() {
-		const content = [];
-		if (pen.value.css) {
-			content.push("<style>\r\n" + pen.value.css + "\r\n</style>");
-		}
-
-		if (pen.value.html) {
-			content.push(pen.value.html);
-		}
-
-		let code = "function save(data){ parent.postMessage(data, '*') }\r\n";
-		if (pen.value.data) {
-			code += `var data = '${pen.value.data.replaceAll("'", "\\'")}'\r\n`;
-		}
-		content.push("<scr" + "ipt>\r\n" + code + "\r\n</scr" + "ipt>");
-
-		if (pen.value.js) {
-			content.push("<scr" + "ipt>\r\n" + pen.value.js + "\r\n</scr" + "ipt>");
-		}
-		console.log(content.join("\r\n"));
-
-		iframe.value.onload = () => {
-			const doc = iframe.value.contentWindow.document;
-			doc.open();
-			doc.writeln(content.join("\r\n"));
-			doc.close();
-		};
-
-		iframe.value.contentWindow.location.reload(true);
-		// const doc = iframe.value.contentWindow.document;
-		// doc.open();
-		// doc.writeln(content.join("\r\n"));
-		// doc.close();
+	function reloadIframe() {
+		// iframe.value.contentWindow.location.reload(true);
+		iframe.value.src = pen.value.cacheUrl + "?t=" + new Date().getTime();
 	}
 </script>
 

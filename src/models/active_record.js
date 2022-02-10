@@ -77,7 +77,12 @@ export default class ActiveRecord {
 		try {
 			const res = await axios.get(`/api/${this.modelKey}/${id}${ext}`);
 
-			return this._regModelData(id, this.build(res.data));
+			if (this.storage[id]) {
+				const model = this.storage[id];
+				return this._regModelData(id, model.mergeUpdate(res.data));
+			} else {
+				return this._regModelData(id, this.build(res.data));
+			}
 		} catch (error) {
 			console.log(error);
 			return null;
@@ -109,7 +114,7 @@ export default class ActiveRecord {
 			},
 		);
 
-		return this._regModelData(id, this.build(res.data));
+		return this._regModelData(id, model.mergeUpdate(res.data));
 	}
 
 	static async destroy(id) {
@@ -149,6 +154,20 @@ export default class ActiveRecord {
 		this.constructor.attrsAccssor.forEach((key) => {
 			this[key] = attrs[key] || null;
 		});
+	}
+
+	mergeUpdate(attrs = {}) {
+		const config = this.constructor.attributes;
+		for (let key in config) {
+			const val = attrs[key];
+			this[key] = val === undefined ? config[key]?.default || null : val;
+		}
+
+		this.constructor.attrsAccssor.forEach((key) => {
+			this[key] = null;
+		});
+
+		return this;
 	}
 
 	async create() {

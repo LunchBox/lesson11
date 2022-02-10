@@ -13,6 +13,8 @@
 	import autosize from "autosize";
 	import CodeMirror from "codemirror";
 
+	import cmOption from "@/utils/codemirror_option.js";
+
 	import "codemirror/lib/codemirror.css";
 	import "codemirror/mode/javascript/javascript.js";
 
@@ -21,19 +23,6 @@
 	});
 
 	const emit = defineEmits(["after-submit", "after-update"]);
-
-	const cmOption = {
-		mode: "javascript",
-		line: true,
-		lineNumbers: true,
-		lineWrapping: true,
-		indentUnit: 2,
-		tabSize: 2,
-		indentWithTabs: true,
-		paste: function (event) {
-			console.log("are you fucking kiding me???");
-		},
-	};
 
 	const inputField = ref(null);
 	onMounted(() => {

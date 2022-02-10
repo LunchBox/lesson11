@@ -1,6 +1,7 @@
 import Entry from "./entry.js";
 import EntryItem from "./entry_item.js";
 import Memo from "./memo.js";
+import Pen from "./pen.js";
 
 // Entry
 Entry.hasMany("entryItems", {
@@ -21,7 +22,7 @@ EntryItem.belongsTo("entry", {
 });
 
 EntryItem.hasOne("item", {
-	allowItemTypes: { Entry, Memo },
+	allowItemTypes: { Entry, Memo, Pen },
 	afterDestroy: async function (item) {
 		if (item instanceof Memo) {
 			await item.destroy();

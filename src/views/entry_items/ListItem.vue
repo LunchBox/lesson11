@@ -46,10 +46,12 @@
 	import EntryItemForm from "./Form.vue";
 
 	import MemoListItem from "../memos/Show.vue";
+	import PenListItem from "../pens/Show.vue";
 	import EntryListItem from "../entries/ListItem.vue";
 
 	const componentMap = {
 		Memo: MemoListItem,
+		Pen: PenListItem,
 		Entry: EntryListItem,
 	};
 

@@ -90,7 +90,6 @@
 		background: #f5f7fa;
 		line-height: 1.35;
 		border-radius: 2px;
-		padding: 0.5em;
 	}
 
 	code {
@@ -107,6 +106,12 @@
 		line-height: 1.35;
 		border-radius: 2px;
 		padding: 0;
+	}
+
+	.hljs {
+		background: transparent !important;
+		font-family: monospace;
+		font-size: 13px;
 	}
 </style>
 

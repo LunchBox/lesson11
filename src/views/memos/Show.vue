@@ -80,15 +80,4 @@
 		margin: 0.5em 0;
 		margin: 1em 0;
 	}
-
-	.hljs {
-		background: transparent;
-		font-family: monospace;
-		font-size: 13px;
-	}
-
-	pre code.hljs {
-		padding: 0.5em;
-		padding: 0;
-	}
 </style>

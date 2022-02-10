@@ -16,6 +16,7 @@
 
 	import Entry from "@/models/entry.js";
 	import Memo from "@/models/memo.js";
+	import Pen from "@/models/pen.js";
 	import EntryItem from "@/models/entry_item.js";
 
 	import autosize from "autosize";
@@ -48,12 +49,22 @@
 		let text = formData.content.trim();
 		let contentType = "markdown";
 
-		const CONTENT_TYPE = ["markdown", "md", "javascript", "js", "html", "css"];
+		const CONTENT_TYPE = [
+			"markdown",
+			"md",
+			"javascript",
+			"js",
+			"html",
+			"css",
+			"pen",
+		];
 
 		const CONTENT_TYPE_ALIAS = {
 			md: "markdown",
 			js: "javascript",
 		};
+
+		let targetItem = null;
 
 		if (text.startsWith("/")) {
 			const res = text.match(/^\/([^\s]+)\s+([\S\s]*)/im);
@@ -66,25 +77,29 @@
 
 				text = res[2];
 			}
-		}
 
-		let targetItem = null;
-
-		if (text.startsWith("@")) {
+			switch (contentType) {
+				case "pen":
+					const pen = new Pen({ html: text });
+					await pen.save();
+					targetItem = pen;
+					break;
+				default:
+					const memo = new Memo({ content: text, contentType });
+					await memo.save();
+					targetItem = memo;
+			}
+		} else if (text.startsWith("@")) {
 			const res = text.match(/^\s*@([^\s]{7})/im);
 			const id = res[1];
 			const entry = await Entry.fetch(id);
-			console.log(entry);
 			targetItem = entry;
-		} else {
-			const memo = new Memo({ content: text, contentType });
-			await memo.save();
-			targetItem = memo;
 		}
 
 		if (!targetItem) {
-			console.log("no target item found");
-			return;
+			const memo = new Memo({ content: text, contentType });
+			await memo.save();
+			targetItem = memo;
 		}
 
 		const entryItem = new EntryItem(formData);

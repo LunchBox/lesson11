@@ -33,7 +33,14 @@
 </template>
 
 <script setup>
-	import { ref, computed, onMounted, nextTick, reactive } from "vue";
+	import {
+		ref,
+		computed,
+		onMounted,
+		onBeforeUnmount,
+		nextTick,
+		reactive,
+	} from "vue";
 
 	import Pen from "@/models/pen.js";
 
@@ -109,6 +116,18 @@
 		});
 	});
 
+	// child iframe 返回一些 string 數據就 save 到 pen 中
+	const runtimeHandler = async (event) => {
+		if (event.data && typeof event.data === "string") {
+			await pen.value.update({ data: event.data });
+		}
+	};
+
+	window.addEventListener("message", runtimeHandler);
+	onBeforeUnmount(() => {
+		window.removeEventListener("message", runtimeHandler);
+	});
+
 	function preview() {
 		const content = [];
 		if (pen.value.css) {
@@ -119,14 +138,29 @@
 			content.push(pen.value.html);
 		}
 
+		let code = "function save(data){ parent.postMessage(data, '*') }\r\n";
+		if (pen.value.data) {
+			code += `var data = '${pen.value.data.replaceAll("'", "\\'")}'\r\n`;
+		}
+		content.push("<scr" + "ipt>\r\n" + code + "\r\n</scr" + "ipt>");
+
 		if (pen.value.js) {
 			content.push("<scr" + "ipt>\r\n" + pen.value.js + "\r\n</scr" + "ipt>");
 		}
 		console.log(content.join("\r\n"));
-		const doc = iframe.value.contentWindow.document;
-		doc.open();
-		doc.writeln(content.join("\r\n"));
-		doc.close();
+
+		iframe.value.onload = () => {
+			const doc = iframe.value.contentWindow.document;
+			doc.open();
+			doc.writeln(content.join("\r\n"));
+			doc.close();
+		};
+
+		iframe.value.contentWindow.location.reload(true);
+		// const doc = iframe.value.contentWindow.document;
+		// doc.open();
+		// doc.writeln(content.join("\r\n"));
+		// doc.close();
 	}
 </script>
 

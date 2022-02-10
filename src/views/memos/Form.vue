@@ -34,6 +34,7 @@
 				});
 			} else {
 				autosize(inputField.value);
+				inputField.value.focus();
 			}
 		});
 	});

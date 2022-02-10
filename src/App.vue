@@ -17,7 +17,8 @@
 		max-width: 56rem;
 		margin: 0 auto;
 
-		font-size: 15px;
+		font-size: 16px;
+		line-height: 1.5;
 	}
 
 	textarea {
@@ -26,9 +27,9 @@
 		-moz-osx-font-smoothing: grayscale;
 		color: #2c3e50;
 
-		font-size: 15px;
+		font-size: 16px;
+		line-height: 1.5;
 
-		line-height: 1.6;
 		-webkit-text-size-adjust: 100%;
 		-webkit-tap-highlight-color: transparent;
 	}

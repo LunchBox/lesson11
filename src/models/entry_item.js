@@ -9,5 +9,5 @@ export default class EntryItem extends ActiveRecord {
 		itemId: { type: "string", default: null },
 	};
 
-	static attrsAccssor = ["content"];
+	// static attrsAccssor = ["content"];
 }

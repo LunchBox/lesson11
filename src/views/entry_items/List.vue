@@ -154,6 +154,7 @@
 				return;
 			}
 
+			e.preventDefault();
 			setFormUnder(selection.value[0]);
 			selection.value.splice(0);
 		}
@@ -216,7 +217,7 @@
 		height: 1rem;
 		border: 1px solid #ccc;
 		border-radius: 2px;
-		margin-top: 1rem;
+		margin-top: 0.5rem;
 		cursor: pointer;
 
 		visibility: hidden;

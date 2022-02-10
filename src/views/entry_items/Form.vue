@@ -4,7 +4,6 @@
 			<textarea
 				ref="inputField"
 				v-model="formData.content"
-				placeholder="Content"
 				@keydown.enter.ctrl="onSubmit"
 			></textarea>
 		</form>

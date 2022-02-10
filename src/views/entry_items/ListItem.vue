@@ -20,7 +20,7 @@
 				</ul>
 			</div>
 		</div>
-		<div class="entry-item__content" @dblclick.prevent="edit">
+		<div class="entry-item__content" @dblclick="edit">
 			<p v-if="!entryItem.item">
 				- item {{ entryItem.itemType }}::{{ entryItem.itemId }} has been
 				removed -
@@ -89,12 +89,20 @@
 	}
 
 	const editing = ref(false);
-	function edit() {
+	function edit(e) {
 		const selectedText = window.getSelection().toString();
 		console.log(selectedText);
 
 		if (selectedText.trim() == "") {
 			editing.value = true;
+
+			// 取消選中的文字
+			if (document.selection && document.selection.empty) {
+				document.selection.empty();
+			} else if (window.getSelection) {
+				var sel = window.getSelection();
+				sel.removeAllRanges();
+			}
 		}
 	}
 

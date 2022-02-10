@@ -71,7 +71,7 @@
 
 <style scoped>
 	textarea {
-		height: 1.6em;
+		height: 1.5em;
 		resize: none;
 	}
 

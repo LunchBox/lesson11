@@ -234,14 +234,13 @@
 
 		background: #fff;
 		color: #555;
-		font-size: 12px;
-		font-family: Monaco, Consolas, "Courier New", monospace;
+		font-size: 13px;
 
 		border: 1px solid #ccc;
 		border-radius: 2px;
 		padding: 0.5em;
 
-		min-width: 200px;
+		min-width: 160px;
 	}
 
 	.entry-item__menus .menus ul {

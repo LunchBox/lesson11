@@ -90,7 +90,12 @@
 
 	const editing = ref(false);
 	function edit() {
-		editing.value = true;
+		const selectedText = window.getSelection().toString();
+		console.log(selectedText);
+
+		if (selectedText.trim() == "") {
+			editing.value = true;
+		}
 	}
 
 	function afterSubmit() {

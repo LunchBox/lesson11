@@ -1,5 +1,5 @@
 <template>
-	<div v-if="pen">
+	<div v-if="pen" class="pen">
 		<div class="toolbar">
 			<a href="" @click.prevent="edit('html')">HTML</a> |
 			<a href="" @click.prevent="edit('js')">JavaScript</a> |
@@ -131,11 +131,19 @@
 </script>
 
 <style scoped>
+	.pen {
+		margin: 1em 0;
+	}
+
 	iframe.debug {
 		width: 100%;
 		border: 2px solid #f5f7fa;
 		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+		display: block;
 	}
+
 	.toolbar {
 		background: #f5f7fa;
 		font-family: monospace;

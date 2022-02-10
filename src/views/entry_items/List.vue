@@ -42,6 +42,8 @@
 	import EntryItemForm from "./Form.vue";
 	import ListItem from "./ListItem.vue";
 
+	import isInput from "@/utils/is_input.js";
+
 	const props = defineProps({
 		entry: Entry,
 	});
@@ -143,9 +145,23 @@
 	}
 
 	const keydownHandler = (e) => {
+		if (isInput(e.target)) {
+			return;
+		}
+
+		if (e.code === "Enter" && !e.ctrlKey) {
+			if (selection.value.length !== 1) {
+				return;
+			}
+
+			setFormUnder(selection.value[0]);
+			selection.value.splice(0);
+		}
+
 		if (e.code === "Escape") {
 			selection.value.splice(0);
 		}
+
 		if (e.code === "Tab" && selection.value.length > 0) {
 			if (window.confirm("Are you sure to split these items?")) {
 				e.preventDefault();
@@ -172,40 +188,6 @@
 	function setFormUnder(entryItem) {
 		formIdx.value = list.value.indexOf(entryItem);
 	}
-
-	function isInput(elem) {
-		const blackList = ["INPUT", "TEXTAREA", "SELECT"];
-		if (blackList.includes(elem.tagName)) {
-			return true;
-		}
-
-		if (elem.classList && elem.classList.contains("is-input")) {
-			return true;
-		}
-
-		if (elem.parentNode) {
-			return isInput(elem.parentNode);
-		}
-
-		return false;
-	}
-
-	document.addEventListener("keydown", (e) => {
-		if (e.code === "Enter" && !e.ctrlKey && !isInput(e.target)) {
-			if (selection.value.length !== 1) {
-				return;
-			}
-
-			setFormUnder(selection.value[0]);
-			selection.value.splice(0);
-		}
-
-		if (e.code === "KeyJ" && e.ctrlKey) {
-		}
-
-		if (e.code === "KeyK" && e.ctrlKey) {
-		}
-	});
 
 	function afterCreate() {
 		formIdx.value += 1;

@@ -4,8 +4,8 @@
 			v-if="isEntryItem(entryItem)"
 			:entry="entry"
 			:entryItem="entryItem"
-			:class="{ selected: selected(entryItem) }"
-			:isSelected="selected(entryItem)"
+			:class="{ selected: isSelected(entryItem) }"
+			:isSelected="isSelected(entryItem)"
 			@click="select(entryItem, $event)"
 			@after-submit="$emit('after-submit')"
 			@merge="merge"
@@ -61,14 +61,46 @@
 
 	const selection = ref([]);
 
+	function isSelected(entryItem) {
+		return selection.value.includes(entryItem);
+	}
+
+	function clearSelection() {
+		selection.value.splice(0);
+	}
+
+	function addToSelection(entryItems) {
+		selection.value.push(
+			...entryItems.filter((ei) => !selection.value.includes(ei))
+		);
+
+		// correct the seq
+		const tmp = list.value.filter((ei) => selection.value.includes(ei));
+		clearSelection();
+		selection.value.push(...tmp);
+	}
+
+	function replaceSelection(entryItems) {
+		clearSelection();
+		addToSelection(entryItems);
+	}
+
+	function removeFromSelection(entryItems) {
+		entryItems.forEach((ei) => {
+			const idx = selection.value.indexOf(ei);
+			if (idx > -1) {
+				selection.value.splice(idx, 1);
+			}
+		});
+	}
+
 	function select(entryItem, event) {
 		const selected = selection.value;
 		if (event.ctrlKey || event.metaKey || event.altKey) {
-			const idx = selected.indexOf(entryItem);
-			if (idx > -1) {
-				selected.splice(idx, 1);
+			if (selected.includes(entryItem)) {
+				removeFromSelection([entryItem]);
 			} else {
-				selected.push(entryItem);
+				addToSelection([entryItem]);
 			}
 		} else if (event.shiftKey) {
 			if (selected.includes(entryItem)) {
@@ -82,27 +114,18 @@
 				const e = list.value.indexOf(selected[selected.length - 1]);
 
 				if (idx < s) {
-					selection.value.splice(0);
-					selection.value.push(...list.value.slice(idx, e + 1));
+					replaceSelection(list.value.slice(idx, e + 1));
 				} else if (idx > s && idx < s) {
-					selection.value.splice(0);
-					selection.value.push(...list.value.slice(s, e + 1));
+					replaceSelection(list.value.slice(s, e + 1));
 				} else if (idx > e) {
-					selection.value.splice(0);
-					selection.value.push(...list.value.slice(s, idx + 1));
+					replaceSelection(list.value.slice(s, idx + 1));
 				}
 			} else {
-				selected.push(entryItem);
+				addToSelection([entryItem]);
 			}
 		} else {
-			selected.splice(0);
-			if (!selected.includes(entryItem)) {
-				selected.push(entryItem);
-			}
+			replaceSelection([entryItem]);
 		}
-
-		const tmp = list.value.filter((ei) => selected.includes(ei));
-		selection.value = tmp;
 
 		// 雖然可以點哪個 item 就在 item 下方開 form，但這樣整個頁面抖動太厲害，不喜
 		// if (selection.value.length === 1) {
@@ -132,7 +155,7 @@
 			return;
 		}
 
-		selection.value.splice(0);
+		clearSelection();
 
 		const pos = entry.entryItemIds.indexOf(entryItem.id);
 
@@ -150,7 +173,7 @@
 		await deleteEntryItem(entryItem);
 		await item.destroy();
 
-		selection.value.push(...entryItems);
+		replaceSelection(entryItems);
 	}
 
 	async function splitSelection() {
@@ -177,6 +200,56 @@
 		await entryItem.create();
 	}
 
+	function moveSelectionUp() {
+		const ids = [...props.entry.entryItemIds];
+		selection.value.forEach((ei) => {
+			const idx = ids.indexOf(ei.id);
+			if (idx > 0) {
+				ids.splice(idx, 1);
+				ids.splice(idx - 1, 0, ei.id);
+			}
+		});
+
+		props.entry.update({ entryItemIds: ids });
+	}
+
+	function moveSelectionDown() {
+		const ids = [...props.entry.entryItemIds];
+		selection.value.forEach((ei) => {
+			const idx = ids.indexOf(ei.id);
+			if (idx < ids.length - 1) {
+				ids.splice(idx, 1);
+				ids.splice(idx + 1, 0, ei.id);
+			}
+		});
+
+		props.entry.update({ entryItemIds: ids });
+	}
+
+	function selectAbove(append = false) {
+		const ei = selection.value[0];
+		const idx = list.value.indexOf(ei);
+		if (idx > 0) {
+			if (!append) {
+				clearSelection();
+			}
+			const target = list.value[idx - 1];
+			addToSelection([target]);
+		}
+	}
+
+	function selectBelow(append = false) {
+		const ei = selection.value[selection.value.length - 1];
+		const idx = list.value.indexOf(ei);
+		if (idx < list.value.length - 1) {
+			if (!append) {
+				clearSelection();
+			}
+			const target = list.value[idx + 1];
+			addToSelection([target]);
+		}
+	}
+
 	const keydownHandler = (e) => {
 		if (isInput(e.target)) {
 			return;
@@ -189,11 +262,11 @@
 
 			e.preventDefault();
 			setFormUnder(selection.value[0]);
-			selection.value.splice(0);
+			clearSelection();
 		}
 
 		if (e.code === "Escape") {
-			selection.value.splice(0);
+			clearSelection();
 		}
 
 		if (selection.value.length > 0) {
@@ -205,48 +278,23 @@
 			}
 
 			if (e.ctrlKey || e.altKey) {
-				if (e.code === "ArrowUp") {
-					e.preventDefault();
-					const ids = [...props.entry.entryItemIds];
-					selection.value.forEach((ei) => {
-						const idx = ids.indexOf(ei.id);
-						if (idx > 0) {
-							ids.splice(idx, 1);
-							ids.splice(idx - 1, 0, ei.id);
-						}
-					});
-
-					props.entry.update({ entryItemIds: ids });
-				}
-
-				if (e.code === "ArrowDown") {
-					e.preventDefault();
-					const ids = [...props.entry.entryItemIds];
-					selection.value.forEach((ei) => {
-						const idx = ids.indexOf(ei.id);
-						if (idx < ids.length - 1) {
-							ids.splice(idx, 1);
-							ids.splice(idx + 1, 0, ei.id);
-						}
-					});
-
-					props.entry.update({ entryItemIds: ids });
-				}
+				const m = {
+					ArrowUp: moveSelectionUp,
+					ArrowDown: moveSelectionDown,
+				};
+				m[e.code] && m[e.code]();
+			} else if (e.shiftKey) {
+				const m = {
+					ArrowUp: selectAbove,
+					ArrowDown: selectBelow,
+				};
+				m[e.code] && m[e.code](true);
 			} else if (selection.value.length === 1) {
-				const ei = selection.value[0];
-				const idx = list.value.indexOf(ei);
-				if (e.code === "ArrowUp") {
-					if (idx > 0) {
-						selection.value.splice(0);
-						selection.value.push(list.value[idx - 1]);
-					}
-				}
-				if (e.code === "ArrowDown") {
-					if (idx < list.value.length - 1) {
-						selection.value.splice(0);
-						selection.value.push(list.value[idx + 1]);
-					}
-				}
+				const m = {
+					ArrowUp: selectAbove,
+					ArrowDown: selectBelow,
+				};
+				m[e.code] && m[e.code]();
 			}
 		}
 	};
@@ -255,10 +303,6 @@
 	onBeforeUnmount(() => {
 		document.removeEventListener("keydown", keydownHandler);
 	});
-
-	function selected(entryItem) {
-		return selection.value.includes(entryItem);
-	}
 
 	function isEntryItem(entryItem) {
 		return entryItem instanceof EntryItem;

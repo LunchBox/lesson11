@@ -251,10 +251,12 @@
 	}
 
 	const keydownHandler = (e) => {
+		// 在 input 裡的所有 keydown 都不做特別處理
 		if (isInput(e.target)) {
 			return;
 		}
 
+		// 在只選中一個 item 地情況下按 entry 就在下方開啟輸入欄
 		if (e.code === "Enter" && !e.ctrlKey) {
 			if (selection.value.length !== 1) {
 				return;
@@ -265,36 +267,50 @@
 			clearSelection();
 		}
 
+		// 按下 esc 取消所有選中
 		if (e.code === "Escape") {
+			e.preventDefault();
 			clearSelection();
 		}
 
 		if (selection.value.length > 0) {
+			// 有選中任何 item 的時候按 tab 就折疊一層
 			if (e.code === "Tab") {
+				e.preventDefault();
 				if (window.confirm("Are you sure to split these items?")) {
-					e.preventDefault();
 					splitSelection();
 				}
 			}
 
 			if (e.ctrlKey || e.altKey) {
+				// 按 ctrl + 上下箭頭移動 item
 				const m = {
 					ArrowUp: moveSelectionUp,
 					ArrowDown: moveSelectionDown,
 				};
 				m[e.code] && m[e.code]();
 			} else if (e.shiftKey) {
+				// 按 shift 上下箭頭選中上下 item
 				const m = {
 					ArrowUp: selectAbove,
 					ArrowDown: selectBelow,
 				};
 				m[e.code] && m[e.code](true);
 			} else if (selection.value.length === 1) {
+				// 只選中一個 item 的情況下按上下箭頭選中對應上下的 item
 				const m = {
 					ArrowUp: selectAbove,
 					ArrowDown: selectBelow,
 				};
 				m[e.code] && m[e.code]();
+			}
+		} else {
+			// 每選中任何 item 的時候按 tab 選中第一個 item
+			if (e.code === "Tab") {
+				if (list.value.length > 0) {
+					e.preventDefault();
+					addToSelection([list.value[0]]);
+				}
 			}
 		}
 	};

@@ -70,6 +70,30 @@
 			} else {
 				selected.push(entryItem);
 			}
+		} else if (event.shiftKey) {
+			if (selected.includes(entryItem)) {
+				return;
+			}
+
+			const idx = list.value.indexOf(entryItem);
+
+			if (selected.length > 0) {
+				const s = list.value.indexOf(selected[0]);
+				const e = list.value.indexOf(selected[selected.length - 1]);
+
+				if (idx < s) {
+					selection.value.splice(0);
+					selection.value.push(...list.value.slice(idx, e + 1));
+				} else if (idx > s && idx < s) {
+					selection.value.splice(0);
+					selection.value.push(...list.value.slice(s, e + 1));
+				} else if (idx > e) {
+					selection.value.splice(0);
+					selection.value.push(...list.value.slice(s, idx + 1));
+				}
+			} else {
+				selected.push(entryItem);
+			}
 		} else {
 			selected.splice(0);
 			if (!selected.includes(entryItem)) {

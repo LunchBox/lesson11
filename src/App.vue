@@ -26,6 +26,10 @@
 		color: var(--color);
 	}
 
+	a {
+		color: var(--color);
+	}
+
 	textarea {
 		font-family: Avenir, Helvetica, Arial, sans-serif;
 		-webkit-font-smoothing: antialiased;

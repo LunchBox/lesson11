@@ -1,6 +1,11 @@
 <template>
 	<div class="gform">
 		<form @submit.prevent="onSubmit">
+			<div class="upload-file">
+				<label>
+					<input type="file" @change="onFileChange" />
+				</label>
+			</div>
 			<textarea
 				ref="inputField"
 				v-model="formData.content"
@@ -19,10 +24,38 @@
 	import Memo from "@/models/memo.js";
 	import Pen from "@/models/pen.js";
 	import EntryItem from "@/models/entry_item.js";
+	import FileAttachment from "@/models/file_attachment.js";
 
 	import autosize from "autosize";
 
 	const inputField = ref(null);
+
+	async function attachItem(item) {
+		const entryItem = new EntryItem(formData);
+		entryItem.item = item;
+		entryItem.entryId = props.entry.id;
+
+		entryItem.$position = props.formIdx;
+
+		console.log(entryItem);
+		await entryItem.create();
+
+		emit("after-create");
+		emit("after-submit");
+
+		reset();
+	}
+
+	async function onFileChange(e) {
+		const f = e.target.files[0];
+		console.log(f);
+
+		const fa = new FileAttachment();
+		fa.file = f;
+		await fa.save();
+
+		await attachItem(fa);
+	}
 
 	function focusOnInput() {
 		inputField.value.style.height = "1.5em";
@@ -130,20 +163,7 @@
 			targetItem = memo;
 		}
 
-		const entryItem = new EntryItem(formData);
-		entryItem.item = targetItem;
-		entryItem.entryId = props.entry.id;
-
-		entryItem.$position = props.formIdx;
-
-		console.log(entryItem);
-		await entryItem.create();
-
-		emit("after-create");
-
-		emit("after-submit");
-
-		reset();
+		await attachItem(targetItem);
 	}
 
 	watch(
@@ -164,8 +184,24 @@
 		margin: var(--p-margin) 0;
 		position: relative;
 	}
-	form {
-		display: flex;
+	.gform form {
+		position: relative;
+	}
+	.gform form .upload-file {
+		position: absolute;
+		left: -2em;
+	}
+	.gform form .upload-file label {
+		display: inline-block;
+		width: 1em;
+		height: 1em;
+		overflow: hidden;
+
+		background: tomato;
+		border-radius: 2px;
+	}
+	.gform form .upload-file label input {
+		display: none;
 	}
 	textarea {
 		height: 1.5em;

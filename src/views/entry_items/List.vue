@@ -340,21 +340,24 @@
 
 <style>
 	.entry-item {
-		margin-left: calc(-2.5em - 4px);
+		/* margin-left: calc(-2.5em - 4px); */
 		display: flex;
+		position: relative;
 	}
 
 	.entry-item__menus {
 		width: 2em;
 		height: 100%;
 
-		position: relative;
+		position: absolute;
+		left: -2em;
 	}
 
 	.entry-item__menus .icon {
-		display: block;
-		width: 1rem;
-		height: 1rem;
+		display: inline-block;
+		width: 1em;
+		height: 1em;
+		box-sizing: border-box;
 		border: 1px solid #ccc;
 		border-radius: 2px;
 		margin: var(--p-margin) 0;
@@ -403,11 +406,14 @@
 
 	.entry-item__content {
 		flex: 1;
-
-		border-left: 4px solid transparent;
-		padding-left: 0.5em;
 	}
-	.entry-item.selected .entry-item__content {
-		border-left-color: tomato;
+	.entry-item.selected .entry-item__content:before {
+		content: " ";
+		position: absolute;
+		left: -0.5em;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+		background: tomato;
 	}
 </style>

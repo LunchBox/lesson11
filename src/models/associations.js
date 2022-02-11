@@ -1,8 +1,9 @@
+import Config from "./config.js";
 import Entry from "./entry.js";
 import EntryItem from "./entry_item.js";
 import Memo from "./memo.js";
 import Pen from "./pen.js";
-import Config from "./config.js";
+import FileAttachment from "./file_attachment.js";
 
 // Entry
 Entry.hasMany("entryItems", {
@@ -24,7 +25,7 @@ EntryItem.belongsTo("entry", {
 
 EntryItem.hasOne("item", {
 	polymorphic: true,
-	allowItemTypes: { Entry, Memo, Pen },
+	allowItemTypes: { Entry, Memo, Pen, FileAttachment },
 	afterDestroy: async function (item) {
 		if (item instanceof Memo) {
 			await item.destroy();
@@ -33,10 +34,6 @@ EntryItem.hasOne("item", {
 });
 
 // Config
-// Config.hasOne("root", {
-// 	className: Entry,
-// 	foreignKey: "rootId",
-// });
 Config.hasMany("entries", {
 	className: Entry,
 	collectionKey: "entryIds",

@@ -25,6 +25,9 @@
 				- item {{ entryItem.itemType }}::{{ entryItem.itemId }} has been
 				removed -
 			</p>
+			<p v-else-if="!componentMap[entryItem.itemType]">
+				- unsupported item type: {{ entryItem.itemType }} -
+			</p>
 			<component
 				v-else
 				:is="componentMap[entryItem.itemType]"
@@ -47,12 +50,14 @@
 
 	import MemoListItem from "../memos/Show.vue";
 	import PenListItem from "../pens/Show.vue";
+	import FaListItem from "../file_attachments/Show.vue";
 	import EntryListItem from "../entries/ListItem.vue";
 
 	const componentMap = {
 		Memo: MemoListItem,
 		Pen: PenListItem,
 		Entry: EntryListItem,
+		FileAttachment: FaListItem,
 	};
 
 	const props = defineProps({

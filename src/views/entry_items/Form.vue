@@ -12,6 +12,7 @@
 				placeholder="What's on your mind?"
 				@keydown.enter.ctrl="onSubmit"
 				@blur="onBlur"
+				@paste="onPaste"
 			></textarea>
 		</form>
 	</div>
@@ -50,11 +51,44 @@
 		const f = e.target.files[0];
 		console.log(f);
 
-		const fa = new FileAttachment();
-		fa.file = f;
+		const fa = new FileAttachment({ file: f });
 		await fa.save();
 
 		await attachItem(fa);
+	}
+
+	const uploading = ref(false);
+	async function onPaste(event) {
+		console.log("--- on paste on textarea");
+
+		// start upload files, stop the regular paste action.
+		event.preventDefault();
+
+		if (!confirm("Files found in clipboard, do you want to upload now?")) {
+			return;
+		}
+
+		uploading.value = true;
+		const items = (event.clipboardData || event.originalEvent.clipboardData)
+			.items;
+		console.log(items);
+
+		Array.from(items).forEach(async (item) => {
+			if (item.kind === "file") {
+				const blob = item.getAsFile();
+				if (blob == null) {
+					console.log("-- blob is null, try next one");
+				} else {
+					console.log(
+						`-- pasted file: ${blob.name}; size: ${blob.size}; type: ${blob.type}`
+					);
+
+					const fa = new FileAttachment({ file: blob });
+					await fa.save();
+					await attachItem(fa);
+				}
+			}
+		});
 	}
 
 	function focusOnInput() {

@@ -13,6 +13,7 @@
 				@keydown.enter.ctrl="onSubmit"
 				@blur="onBlur"
 				@paste="onPaste"
+				@drop="onDrop"
 			></textarea>
 		</form>
 	</div>
@@ -47,17 +48,30 @@
 		reset();
 	}
 
-	async function onFileChange(e) {
-		const f = e.target.files[0];
-		console.log(f);
-
-		const fa = new FileAttachment({ file: f });
+	async function attachFile(file) {
+		console.log(
+			`-- uploading file ${file.name}; size: ${file.size}; type: ${file.type}`
+		);
+		const fa = new FileAttachment({ file });
 		await fa.save();
-
 		await attachItem(fa);
 	}
 
-	const uploading = ref(false);
+	async function onFileChange(e) {
+		await attachFile(e.target.files[0]);
+	}
+
+	function onDrop(event) {
+		let files = event.dataTransfer.files;
+
+		// if files prsent, otherwise just pop up the event to normal drop..
+		if (files && files.length > 0) {
+			event.preventDefault();
+			console.log("-- files detected on drop");
+			Array.from(files).forEach(attachFile);
+		}
+	}
+
 	async function onPaste(event) {
 		console.log("--- on paste on textarea");
 
@@ -68,27 +82,14 @@
 			return;
 		}
 
-		uploading.value = true;
 		const items = (event.clipboardData || event.originalEvent.clipboardData)
 			.items;
 		console.log(items);
 
-		Array.from(items).forEach(async (item) => {
-			if (item.kind === "file") {
-				const blob = item.getAsFile();
-				if (blob == null) {
-					console.log("-- blob is null, try next one");
-				} else {
-					console.log(
-						`-- pasted file: ${blob.name}; size: ${blob.size}; type: ${blob.type}`
-					);
-
-					const fa = new FileAttachment({ file: blob });
-					await fa.save();
-					await attachItem(fa);
-				}
-			}
-		});
+		Array.from(items)
+			.filter((item) => item.kind === "file")
+			.map((item) => item.getAsFile())
+			.forEach(attachFile);
 	}
 
 	function focusOnInput() {

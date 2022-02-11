@@ -75,21 +75,22 @@
 	async function onPaste(event) {
 		console.log("--- on paste on textarea");
 
-		// start upload files, stop the regular paste action.
-		event.preventDefault();
-
-		if (!confirm("Files found in clipboard, do you want to upload now?")) {
-			return;
-		}
-
 		const items = (event.clipboardData || event.originalEvent.clipboardData)
 			.items;
 		console.log(items);
 
-		Array.from(items)
+		const files = Array.from(items)
 			.filter((item) => item.kind === "file")
-			.map((item) => item.getAsFile())
-			.forEach(attachFile);
+			.map((item) => item.getAsFile());
+
+		if (files.length > 0) {
+			// start upload files, stop the regular paste action.
+			event.preventDefault();
+
+			if (confirm("Files found in clipboard, do you want to upload now?")) {
+				files.forEach(attachFile);
+			}
+		}
 	}
 
 	function focusOnInput() {

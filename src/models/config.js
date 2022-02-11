@@ -13,9 +13,6 @@ export default class Config extends ActiveRecord {
 
 	static async preload() {
 		await this.fetchAll();
-		console.log(this.all);
-		console.log(this.all[0]);
-		console.log(this.global);
 		if (!this.global) {
 			const config = new this({});
 			await config.save();

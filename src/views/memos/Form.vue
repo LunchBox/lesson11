@@ -70,6 +70,9 @@
 </script>
 
 <style scoped>
+	form {
+		margin-top: var(--p-margin);
+	}
 	textarea {
 		height: 1.5em;
 		resize: none;

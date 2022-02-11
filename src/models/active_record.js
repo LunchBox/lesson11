@@ -231,11 +231,24 @@ export default class ActiveRecord {
 	// associations
 	static hasMany(
 		associationName,
-		config = { className: null, foreignKey: null, dependency: "nullify" },
+		config = {
+			className: null,
+			foreignKey: null,
+			collectionKey: null,
+			dependency: "nullify",
+		},
 	) {
-		if (!config.className || !config.foreignKey) {
-			throw new Error("className is required");
+		if (
+			!config.className ||
+			(!config.foreignKey && !config.collectionKey)
+		) {
+			throw new Error(
+				"className and foreignKey(or collectionKey) is required",
+			);
 		}
+
+		const cName = _.capitalize(associationName);
+		const fetchMethod = `fetch${cName}`;
 
 		Object.defineProperty(this.prototype, associationName, {
 			get: function () {
@@ -250,6 +263,17 @@ export default class ActiveRecord {
 				});
 			},
 		});
+
+		// only collectionKey way can fetch entries,
+		// foreignKey way has to load all associations or the server provide API to filter items
+		if (config.collectionKey) {
+			this.prototype[fetchMethod] = async function () {
+				const jobs = this[config.collectionKey].map((id) =>
+					config.className.fetch(id),
+				);
+				return Promise.all(jobs);
+			};
+		}
 
 		CALLBACKS.forEach((callbackType) => {
 			this.regCallback(callbackType, async function () {

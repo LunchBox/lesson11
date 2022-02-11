@@ -1,26 +1,59 @@
 <script setup>
-	import { computed } from "vue";
+	import { ref, computed } from "vue";
 	import Config from "@/models/config";
-	Config.preload();
 
-	const root = computed(() => Config.global && Config.global.root);
+	const loading = ref(true);
+	Config.preload().then(() => {
+		loading.value = false;
+	});
+
+	const entries = computed(() => (Config.global && Config.global.entries) || []);
+
+	async function remove(entry) {
+		const g = Config.global;
+		const idx = g.entryIds.indexOf(entry.id);
+		if (idx > -1) {
+			g.entryIds.splice(idx, 1);
+		}
+		await g.update();
+	}
 </script>
 
 <template>
 	<header>
 		<router-link to="/entries">Entries</router-link>
-		<template v-if="root">
-			&middot;
-			<router-link :to="`/entries/${root.id}`">
-				{{ root.title }}
-			</router-link>
-		</template>
+		&middot;
+
+		<ul class="tabs" v-if="!loading">
+			<li v-for="entry in entries" :key="entry.id">
+				<router-link :key="entry.id" :to="`/entries/${entry.id}`">
+					{{ entry.title }}
+				</router-link>
+				<a href="" class="del" @click.prevent="remove(entry)">x</a>
+			</li>
+		</ul>
 	</header>
 	<main>
 		<router-view></router-view>
 	</main>
 	<footer></footer>
 </template>
+
+<style scoped>
+	.tabs {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: inline-flex;
+	}
+	.tabs li {
+		margin: 0 4px;
+	}
+	.tabs li a {
+		text-decoration: none;
+		margin-right: 6px;
+	}
+</style>
 
 <style>
 	#app {

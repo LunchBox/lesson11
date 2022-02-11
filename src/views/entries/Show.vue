@@ -1,14 +1,12 @@
 <template>
 	<div v-if="loading">loading...</div>
 	<div v-else>
-		<h2>{{ entry.title }}</h2>
+		<h2 @dblclick="addToTabs">{{ entry.title }}</h2>
 
 		<div class="meta">
 			<span @click.prevent="copyToClipboard">
 				{{ entry.mark }}
 			</span>
-			&middot;
-			<a href="" @click.prevent="setHome">Set Home</a>
 		</div>
 
 		<EntryItemList :entry="entry" @after-submit="afterSubmit" />
@@ -69,10 +67,12 @@
 		document.execCommand("copy");
 	}
 
-	async function setHome() {
+	async function addToTabs() {
 		if (Config.global && entry.value) {
-			Config.global.root = entry.value;
-			await Config.global.save();
+			if (!Config.global.entryIds.includes(entry.value.id)) {
+				Config.global.entryIds.push(entry.value.id);
+				await Config.global.update();
+			}
 		}
 	}
 </script>

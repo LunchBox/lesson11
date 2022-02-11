@@ -33,7 +33,11 @@ EntryItem.hasOne("item", {
 });
 
 // Config
-Config.hasOne("root", {
+// Config.hasOne("root", {
+// 	className: Entry,
+// 	foreignKey: "rootId",
+// });
+Config.hasMany("entries", {
 	className: Entry,
-	foreignKey: "rootId",
+	collectionKey: "entryIds",
 });

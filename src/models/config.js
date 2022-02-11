@@ -4,7 +4,7 @@ export default class Config extends ActiveRecord {
 	static modelKey = "config";
 
 	static attributes = {
-		rootId: { type: "string", default: null },
+		entryIds: { type: "array", default: [] },
 	};
 
 	static get global() {
@@ -18,7 +18,7 @@ export default class Config extends ActiveRecord {
 			await config.save();
 			await this.fetchAll();
 		} else {
-			await this.global.fetchRoot();
+			await this.global.fetchEntries();
 		}
 	}
 }

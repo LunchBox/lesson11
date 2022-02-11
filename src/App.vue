@@ -19,6 +19,8 @@
 
 		font-size: 16px;
 		line-height: 1.5;
+
+		--p-margin: 0.7rem;
 	}
 
 	textarea {
@@ -36,5 +38,11 @@
 
 	footer {
 		height: 10em;
+	}
+
+	::placeholder {
+		/* Chrome, Firefox, Opera, Safari 10.1+ */
+		color: #ccc;
+		opacity: 1; /* Firefox */
 	}
 </style>

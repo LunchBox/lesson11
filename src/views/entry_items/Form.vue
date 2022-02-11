@@ -152,7 +152,7 @@
 
 <style scoped>
 	.gform {
-		margin: 0.5em 0;
+		margin: var(--p-margin) 0;
 		position: relative;
 	}
 	form {

@@ -129,7 +129,7 @@
 
 <style scoped>
 	.pen {
-		margin: 0.5em 0;
+		margin: var(--p-margin) 0;
 	}
 
 	iframe.debug {
@@ -145,18 +145,20 @@
 		background: #f5f7fa;
 		font-family: monospace;
 		padding: 4px 0.5em;
-		margin-bottom: 0.5em;
+		margin-bottom: var(--p-margin);
 	}
+
 	.toolbar a {
 		color: #333;
 		font-size: smaller;
 		text-decoration: none;
 	}
+
 	form {
-		margin-bottom: 0.5em;
+		margin-bottom: var(--p-margin);
 	}
 
 	.form-item {
-		margin-bottom: 0.5em;
+		margin-bottom: var(--p-margin);
 	}
 </style>

@@ -78,7 +78,7 @@
 	.path {
 		font-style: italic;
 		font-size: smaller;
-		margin-bottom: 0.5em;
+		margin-bottom: var(--p-margin);
 	}
 </style>
 
@@ -86,7 +86,7 @@
 	.CodeMirror {
 		font-size: 13px;
 		border: 1px solid #eee;
-		margin: 0.5em 0;
+		margin: var(--p-margin) 0;
 		height: auto;
 
 		line-height: 1.35;

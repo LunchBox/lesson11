@@ -97,7 +97,7 @@
 		line-height: 1.35;
 		border-radius: 2px;
 
-		margin: 0.5em 0;
+		margin: var(--p-margin) 0;
 		padding: 0.5em;
 	}
 
@@ -142,6 +142,6 @@
 
 <style >
 	.list-item p {
-		margin: 0.5em 0;
+		margin: var(--p-margin) 0;
 	}
 </style>

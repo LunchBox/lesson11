@@ -173,6 +173,6 @@
 		margin-right: 0.5em;
 	}
 	textarea:focus {
-		color: #2c3e50;
+		color: var(--color);
 	}
 </style>

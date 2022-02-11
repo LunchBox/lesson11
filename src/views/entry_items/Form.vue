@@ -1,9 +1,11 @@
 <template>
-	<div style="margin: 1em 0">
+	<div class="gform">
+		<span class="save-mark"></span>
 		<form @submit.prevent="onSubmit">
 			<textarea
 				ref="inputField"
 				v-model="formData.content"
+				placeholder="What's on your mind?"
 				@keydown.enter.ctrl="onSubmit"
 			></textarea>
 		</form>
@@ -131,8 +133,29 @@
 </script>
 
 <style scoped>
+	.gform {
+		margin: 0.5em 0;
+		position: relative;
+	}
+	.gform .save-mark {
+		position: absolute;
+		left: -13px;
+		top: 0.5em;
+		width: 6px;
+		height: 6px;
+		background: tomato;
+		border-radius: 50%;
+	}
+	form {
+		display: block;
+	}
 	textarea {
 		height: 1.5em;
 		resize: none;
+		border: none;
+		outline: none;
+		padding: 0;
+		margin: 0;
+		display: block;
 	}
 </style>

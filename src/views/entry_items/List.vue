@@ -18,6 +18,7 @@
 				<a href="" @click.prevent="removeIdCache(idx)">Remove</a>
 			</p>
 		</div>
+
 		<EntryItemForm
 			v-if="formIdx === idx"
 			:entry="entry"
@@ -75,6 +76,10 @@
 
 		const tmp = list.value.filter((ei) => selected.includes(ei));
 		selection.value = tmp;
+
+		if (selection.value.length === 1) {
+			setFormUnder(selection.value[0]);
+		}
 	}
 
 	async function removeIdCache(idx) {

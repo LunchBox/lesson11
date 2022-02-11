@@ -19,13 +19,16 @@
 			</p>
 		</div>
 
+		<div :id="`form-wrapper-${idx}`"></div>
+	</template>
+
+	<teleport v-if="formIdx !== null" :to="`#form-wrapper-${formIdx}`">
 		<EntryItemForm
-			v-if="formIdx === idx"
 			:entry="entry"
 			:formIdx="formIdx"
 			@after-create="afterCreate"
 		/>
-	</template>
+	</teleport>
 
 	<EntryItemForm
 		v-if="entryItemList.length === 0"
@@ -77,9 +80,10 @@
 		const tmp = list.value.filter((ei) => selected.includes(ei));
 		selection.value = tmp;
 
-		if (selection.value.length === 1) {
-			setFormUnder(selection.value[0]);
-		}
+		// 雖然可以點哪個 item 就在 item 下方開 form，但這樣整個頁面抖動太厲害，不喜
+		// if (selection.value.length === 1) {
+		// 	setFormUnder(selection.value[0]);
+		// }
 	}
 
 	async function removeIdCache(idx) {

@@ -1,12 +1,12 @@
 <template>
 	<div class="gform">
-		<span class="save-mark"></span>
 		<form @submit.prevent="onSubmit">
 			<textarea
 				ref="inputField"
 				v-model="formData.content"
 				placeholder="What's on your mind?"
 				@keydown.enter.ctrl="onSubmit"
+				@blur="onBlur"
 			></textarea>
 		</form>
 	</div>
@@ -23,12 +23,23 @@
 	import autosize from "autosize";
 
 	const inputField = ref(null);
+
+	function focusOnInput() {
+		inputField.value.style.height = "1.5em";
+		autosize(inputField.value);
+		inputField.value.focus();
+	}
+
 	onMounted(() => {
-		nextTick(() => {
-			autosize(inputField.value);
-			inputField.value.focus();
-		});
+		nextTick(focusOnInput);
 	});
+
+	watch(
+		() => props.formIdx,
+		() => {
+			nextTick(focusOnInput);
+		}
+	);
 
 	const props = defineProps({
 		entry: Entry,
@@ -44,6 +55,13 @@
 
 	function reset() {
 		formData.content = null;
+		nextTick(focusOnInput);
+	}
+
+	function onBlur() {
+		if (formData.content !== null && formData.content.trim() !== "") {
+			onSubmit();
+		}
 	}
 
 	async function onSubmit() {
@@ -137,17 +155,8 @@
 		margin: 0.5em 0;
 		position: relative;
 	}
-	.gform .save-mark {
-		position: absolute;
-		left: -13px;
-		top: 0.5em;
-		width: 6px;
-		height: 6px;
-		background: tomato;
-		border-radius: 50%;
-	}
 	form {
-		display: block;
+		display: flex;
 	}
 	textarea {
 		height: 1.5em;
@@ -157,5 +166,13 @@
 		padding: 0;
 		margin: 0;
 		display: block;
+
+		color: tomato;
+
+		flex: 1;
+		margin-right: 0.5em;
+	}
+	textarea:focus {
+		color: #2c3e50;
 	}
 </style>

@@ -1,16 +1,14 @@
 <template>
 	<div v-if="loading">loading...</div>
 	<div v-else>
-		<div style="margin-bottom: 1em">
-			<router-link to="/entries">Entries</router-link> &middot;
-		</div>
-
 		<h2>{{ entry.title }}</h2>
 
 		<div class="meta">
 			<span @click.prevent="copyToClipboard">
 				{{ entry.mark }}
 			</span>
+			&middot;
+			<a href="" @click.prevent="setHome">Set Home</a>
 		</div>
 
 		<EntryItemList :entry="entry" @after-submit="afterSubmit" />
@@ -23,6 +21,7 @@
 
 	import Entry from "@/models/entry.js";
 	import Memo from "@/models/memo.js";
+	import Config from "@/models/config.js";
 
 	import EntryItemList from "../entry_items/List.vue";
 
@@ -69,6 +68,13 @@
 		window.getSelection().addRange(range);
 		document.execCommand("copy");
 	}
+
+	async function setHome() {
+		if (Config.global && entry.value) {
+			Config.global.root = entry.value;
+			await Config.global.save();
+		}
+	}
 </script>
 
 <style scoped>
@@ -77,9 +83,10 @@
 	}
 	.meta {
 		margin-bottom: var(--p-margin);
-	}
-	.meta span {
 		font-family: monospace;
+		color: #999;
+	}
+	.meta > * {
 		color: #999;
 		font-size: smaller;
 

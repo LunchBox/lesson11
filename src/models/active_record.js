@@ -54,7 +54,7 @@ export default class ActiveRecord {
 					: 1;
 			});
 
-			console.log(files);
+			// console.log(files);
 
 			const jobs = files.map((file) => {
 				const id = file.filename.split(ext)[0];
@@ -63,6 +63,7 @@ export default class ActiveRecord {
 			await Promise.all(jobs);
 		} catch (err) {
 			// just do nothing.
+			console.log(err);
 		}
 	}
 
@@ -285,8 +286,6 @@ export default class ActiveRecord {
 
 		CALLBACKS.forEach((callbackType) => {
 			this.regCallback(callbackType, async function () {
-				// console.log(callbackType, this);
-
 				const association = await config.className.fetch(
 					this[config.foreignKey],
 				);
@@ -298,38 +297,80 @@ export default class ActiveRecord {
 		});
 	}
 
-	static hasOne(associationName, config = { allowItemTypes: {} }) {
+	static hasOne(
+		associationName,
+		config = {
+			className: null,
+			foreignKey: null,
+			polymorphic: false,
+			allowItemTypes: {}, // required when polymorphic is True
+		},
+	) {
+		// entry => Entry
+		// config => Config
+		// item => Item
 		const cName = _.capitalize(associationName);
-		const typeName = `${associationName}Type`;
-		const idName = `${associationName}Id`;
+		const fetchMethod = `fetch${cName}`;
 
-		const ITEM_TYPES = config.allowItemTypes;
+		// 多態
+		if (config.polymorphic) {
+			const itemType = `${associationName}Type`;
+			const itemId = `${associationName}Id`;
 
-		Object.defineProperty(this.prototype, associationName, {
-			get: function () {
-				if (!this[idName]) {
+			const allowTypes = config.allowItemTypes;
+
+			Object.defineProperty(this.prototype, associationName, {
+				get: function () {
+					if (!this[itemId]) {
+						return null;
+					}
+
+					return allowTypes[this[itemType]].find(this[itemId]);
+				},
+				set: function (obj) {
+					this[itemType] = obj.constructor.name;
+					this[itemId] = obj.id;
+				},
+			});
+
+			this.prototype[fetchMethod] = async function () {
+				return await allowTypes[this[itemType]].fetch(this[itemId]);
+			};
+		} else {
+			let foreignKey = config.foreignKey;
+			if (!foreignKey) {
+				foreignKey = `${associationName}Id`;
+			}
+
+			let className = config.className;
+			if (!className) {
+				throw new Error("className is required.");
+			}
+
+			Object.defineProperty(this.prototype, associationName, {
+				get: function () {
+					if (!this[foreignKey]) {
+						return null;
+					}
+
+					return className.find(this[foreignKey]);
+				},
+				set: function (obj) {
+					this[foreignKey] = obj.id;
+				},
+			});
+
+			this.prototype[fetchMethod] = async function () {
+				if (!this[foreignKey]) {
 					return null;
 				}
-
-				return ITEM_TYPES[this[typeName]].find(this[idName]);
-			},
-			set: function (obj) {
-				this[typeName] = obj.constructor.name;
-				this[idName] = obj.id;
-			},
-		});
-
-		this.prototype[`fetch${cName}`] = async function () {
-			return await ITEM_TYPES[this[typeName]].fetch(this[idName]);
-		};
+				return await className.fetch(this[foreignKey]);
+			};
+		}
 
 		CALLBACKS.forEach((callbackType) => {
-			this.regCallback(callbackType, async function () {
-				// console.log(callbackType, this);
-
-				const association = await config.allowItemTypes[
-					this[typeName]
-				].fetch(this[idName]);
+			this.regCallback(callbackType, async function (item) {
+				const association = await item[fetchMethod]();
 
 				if (config[callbackType]) {
 					await config[callbackType].bind(this)(association);

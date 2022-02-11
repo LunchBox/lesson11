@@ -1,8 +1,24 @@
 <script setup>
+	import { computed } from "vue";
+	import Config from "@/models/config";
+	Config.preload();
+
+	const root = computed(() => Config.global && Config.global.root);
 </script>
 
 <template>
-	<router-view></router-view>
+	<header>
+		<router-link to="/entries">Entries</router-link>
+		<template v-if="root">
+			&middot;
+			<router-link :to="`/entries/${root.id}`">
+				{{ root.title }}
+			</router-link>
+		</template>
+	</header>
+	<main>
+		<router-view></router-view>
+	</main>
 	<footer></footer>
 </template>
 
@@ -13,10 +29,6 @@
 		-moz-osx-font-smoothing: grayscale;
 		color: #2c3e50;
 
-		max-width: 640px;
-		max-width: 56rem;
-		margin: 0 auto;
-
 		font-size: 16px;
 		line-height: 1.5;
 
@@ -24,6 +36,12 @@
 		--color: #2c3e50;
 
 		color: var(--color);
+	}
+
+	main {
+		max-width: 640px;
+		max-width: 56rem;
+		margin: 0 auto;
 	}
 
 	a {

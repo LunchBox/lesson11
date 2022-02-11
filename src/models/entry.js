@@ -1,4 +1,3 @@
-import { computed } from "vue";
 import ActiveRecord from "./active_record.js";
 
 export default class Entry extends ActiveRecord {
@@ -13,5 +12,3 @@ export default class Entry extends ActiveRecord {
 		return `@${this.id}`;
 	}
 }
-
-console.log(Entry);

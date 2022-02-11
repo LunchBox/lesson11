@@ -85,7 +85,16 @@
 
 		let targetItem = null;
 
-		if (text.startsWith("/")) {
+		if (text.startsWith("//")) {
+			const res = text.match(/^\/\/(.+)/im);
+			if (res && res[1] && res[1].trim() !== "") {
+				props.entry.update({ title: res[1].trim() });
+			} else {
+				props.entry.update({ title: "Untitled" });
+			}
+			reset();
+			return;
+		} else if (text.startsWith("/")) {
 			const res = text.match(/^\/([^\s]+)\s+([\S\s]*)/im);
 			if (CONTENT_TYPE.includes(res[1].toLowerCase())) {
 				contentType = res[1].toLowerCase();

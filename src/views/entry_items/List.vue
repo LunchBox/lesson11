@@ -196,10 +196,57 @@
 			selection.value.splice(0);
 		}
 
-		if (e.code === "Tab" && selection.value.length > 0) {
-			if (window.confirm("Are you sure to split these items?")) {
-				e.preventDefault();
-				splitSelection();
+		if (selection.value.length > 0) {
+			if (e.code === "Tab") {
+				if (window.confirm("Are you sure to split these items?")) {
+					e.preventDefault();
+					splitSelection();
+				}
+			}
+
+			if (e.ctrlKey || e.altKey) {
+				if (e.code === "ArrowUp") {
+					e.preventDefault();
+					const ids = [...props.entry.entryItemIds];
+					selection.value.forEach((ei) => {
+						const idx = ids.indexOf(ei.id);
+						if (idx > 0) {
+							ids.splice(idx, 1);
+							ids.splice(idx - 1, 0, ei.id);
+						}
+					});
+
+					props.entry.update({ entryItemIds: ids });
+				}
+
+				if (e.code === "ArrowDown") {
+					e.preventDefault();
+					const ids = [...props.entry.entryItemIds];
+					selection.value.forEach((ei) => {
+						const idx = ids.indexOf(ei.id);
+						if (idx < ids.length - 1) {
+							ids.splice(idx, 1);
+							ids.splice(idx + 1, 0, ei.id);
+						}
+					});
+
+					props.entry.update({ entryItemIds: ids });
+				}
+			} else if (selection.value.length === 1) {
+				const ei = selection.value[0];
+				const idx = list.value.indexOf(ei);
+				if (e.code === "ArrowUp") {
+					if (idx > 0) {
+						selection.value.splice(0);
+						selection.value.push(list.value[idx - 1]);
+					}
+				}
+				if (e.code === "ArrowDown") {
+					if (idx < list.value.length - 1) {
+						selection.value.splice(0);
+						selection.value.push(list.value[idx + 1]);
+					}
+				}
 			}
 		}
 	};

@@ -11,10 +11,11 @@
 	import { ref, reactive, watch, onMounted, nextTick } from "vue";
 	import Memo from "@/models/memo.js";
 	import autosize from "autosize";
+	import { js_beautify } from "js-beautify";
+	import jbOption from "@/utils/js_beautify_option.js";
+
 	import CodeMirror from "codemirror";
-
 	import cmOption from "@/utils/codemirror_option.js";
-
 	import "codemirror/lib/codemirror.css";
 	import "codemirror/mode/javascript/javascript.js";
 
@@ -32,6 +33,20 @@
 				editor.on("change", (cm) => {
 					formData.content = cm.getValue();
 				});
+
+				editor.on("keydown", (cm, e) => {
+					if (e.code === "KeyS" && (e.ctrlKey || e.metaKey)) {
+						e.preventDefault();
+
+						let content = cm.getValue();
+						if (props.memo.contentType === "javascript") {
+							content = js_beautify(cm.getValue(), jbOption);
+							cm.getDoc().setValue(content);
+						}
+
+						props.memo.update({ content });
+					}
+				});
 			} else {
 				autosize(inputField.value);
 				inputField.value.focus();
@@ -48,7 +63,11 @@
 	}
 
 	async function onSubmit() {
-		await props.memo.update(formData);
+		let { content } = formData;
+		if (props.memo.contentType === "javascript") {
+			content = js_beautify(content, jbOption);
+		}
+		await props.memo.update({ content });
 
 		emit("after-update");
 		emit("after-submit");

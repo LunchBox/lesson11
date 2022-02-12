@@ -1,4 +1,4 @@
-const cmOption = {
+export default {
 	mode: "javascript",
 	line: true,
 	lineNumbers: true,
@@ -10,5 +10,3 @@ const cmOption = {
 		console.log("are you fucking kiding me???");
 	},
 };
-
-export default cmOption;

@@ -30,7 +30,13 @@ export default class Pen extends ActiveRecord {
 		content.push("<scr" + "ipt>\r\n" + code + "\r\n</scr" + "ipt>");
 
 		if (this.js) {
-			content.push("<scr" + "ipt>\r\n" + this.js + "\r\n</scr" + "ipt>");
+			content.push(
+				"<scr" +
+					'ipt type="module">\r\n' +
+					this.js +
+					"\r\n</scr" +
+					"ipt>",
+			);
 		}
 
 		return content.join("\r\n");

@@ -9,6 +9,7 @@
 			<div v-if="memo.isMarkdown" v-html="mdContent"></div>
 			<div v-else v-highlight>
 				<pre><code :class="`language-${memo.contentType}`">{{ memo.content }}</code></pre>
+				<div class="path">/memos_cache/{{ memo.cacheFilename }}</div>
 				<div
 					v-if="memo.contentType === 'html'"
 					v-html="memo.content"
@@ -74,5 +75,11 @@
 	.output {
 		word-break: break-all;
 		margin: var(--p-margin) 0;
+	}
+
+	.path {
+		font-style: italic;
+		font-size: smaller;
+		margin-top: -8px;
 	}
 </style>

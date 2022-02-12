@@ -1,9 +1,6 @@
 <template>
 	<form @submit.prevent="onSubmit" @keydown.enter.ctrl="onSubmit">
 		<textarea ref="inputField" v-model="formData.content"></textarea>
-		<div class="path">
-			http://localhost:9090/memo_caches/{{ memo.cacheFilename }}
-		</div>
 	</form>
 </template>
 
@@ -95,12 +92,6 @@
 	textarea {
 		height: 1.5em;
 		resize: none;
-	}
-
-	.path {
-		font-style: italic;
-		font-size: smaller;
-		margin-bottom: var(--p-margin);
 	}
 </style>
 

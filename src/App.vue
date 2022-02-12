@@ -103,4 +103,9 @@
 		color: #ccc;
 		opacity: 1; /* Firefox */
 	}
+
+	.rel-path {
+		font-style: italic;
+		font-size: smaller;
+	}
 </style>

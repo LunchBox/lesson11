@@ -1,6 +1,7 @@
 <template>
 	<div v-if="pen" class="pen">
 		<div class="toolbar">
+			<a href="" @click.prevent="reloadIframe">Run</a> |
 			<a href="" @click.prevent="edit('html')">HTML</a> |
 			<a href="" @click.prevent="edit('js')">JavaScript</a> |
 			<a href="" @click.prevent="edit('css')">CSS</a>

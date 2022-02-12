@@ -12,7 +12,7 @@ async function loadEntry(loading, entryId) {
 	const memos = await Promise.all(entryItems.map((ei) => ei?.fetchItem()));
 
 	loading.value = false;
-	syncScript(entry);
+	// syncScript(entry);
 }
 
 function syncScript(entry) {

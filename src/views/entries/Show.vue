@@ -17,6 +17,8 @@
 	import { ref, computed, onBeforeUnmount } from "vue";
 	import { useRoute, onBeforeRouteUpdate } from "vue-router";
 
+	import copyToClipboard from "@/utils/copy_to_clipboard.js";
+
 	import Entry from "@/models/entry.js";
 	import Memo from "@/models/memo.js";
 	import Config from "@/models/config.js";
@@ -35,36 +37,27 @@
 		loadEntry(loading, to.params.id);
 	});
 
-	const runtimeHandler = (event) => {
-		// console.log(event.data);
-		const typeWhitelist = ["log", "image"];
-		if (
-			event.data &&
-			typeof event.data === "object" &&
-			typeWhitelist.includes(event.data.type)
-		) {
-			const { id, type, data } = event.data;
-			const memo = Memo.find(id);
-			memo.$result = { type, data };
-		}
-	};
+	// const runtimeHandler = (event) => {
+	// 	// console.log(event.data);
+	// 	const typeWhitelist = ["log", "image"];
+	// 	if (
+	// 		event.data &&
+	// 		typeof event.data === "object" &&
+	// 		typeWhitelist.includes(event.data.type)
+	// 	) {
+	// 		const { id, type, data } = event.data;
+	// 		const memo = Memo.find(id);
+	// 		memo.$result = { type, data };
+	// 	}
+	// };
 
-	window.addEventListener("message", runtimeHandler);
-	onBeforeUnmount(() => {
-		window.removeEventListener("message", runtimeHandler);
-	});
+	// window.addEventListener("message", runtimeHandler);
+	// onBeforeUnmount(() => {
+	// 	window.removeEventListener("message", runtimeHandler);
+	// });
 
 	function afterSubmit() {
-		syncScript(entry.value);
-	}
-
-	function copyToClipboard(event) {
-		const elem = event.target;
-		const range = document.createRange();
-		range.selectNode(elem);
-		window.getSelection().removeAllRanges();
-		window.getSelection().addRange(range);
-		document.execCommand("copy");
+		// syncScript(entry.value);
 	}
 
 	async function addToTabs() {

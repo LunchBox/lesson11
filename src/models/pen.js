@@ -46,8 +46,12 @@ export default class Pen extends ActiveRecord {
 		return this.id + ".html";
 	}
 
+	get cachePath() {
+		return `/${this.constructor.modelKey}_cache/${this.cacheFilename}`;
+	}
+
 	get cacheUrl() {
-		return `http://localhost:9090/${this.constructor.modelKey}_cache/${this.cacheFilename}`;
+		return `http://localhost:9090/${this.cachePath}`;
 	}
 
 	async fileize() {

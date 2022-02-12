@@ -33,6 +33,7 @@
 				:is="componentMap[entryItem.itemType]"
 				:item="entryItem.item"
 				:editing="editing"
+				:isSelected="isSelected"
 				@after-submit="afterSubmit"
 			>
 			</component>
@@ -96,7 +97,7 @@
 	const editing = ref(false);
 	function edit(e) {
 		const selectedText = window.getSelection().toString();
-		console.log(selectedText);
+		// console.log(selectedText);
 
 		if (selectedText.trim() == "") {
 			editing.value = true;

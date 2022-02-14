@@ -134,6 +134,17 @@
 	}
 
 
+function formatText(text){
+  let d = new Date();
+  let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
+  let mo = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(d);
+  let da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
+
+  const r = `${ye}-${mo}-${da}`;
+  
+  return text.replaceAll(/@date($|\s)/ig, `${ye}-${mo}-${da}$1`);
+}
+
   const submitting = ref(false);
 	async function onSubmit() {
     if (submitting.value || formData.content === null) {
@@ -153,6 +164,7 @@
 			"html",
 			"css",
 			"pen",
+      "sub",
 		];
 
 		const CONTENT_TYPE_ALIAS = {
@@ -165,7 +177,7 @@
 		if (text.startsWith("//")) {
 			const res = text.match(/^\/\/(.+)/im);
 			if (res && res[1] && res[1].trim() !== "") {
-				props.entry.update({ title: res[1].trim() });
+				props.entry.update({ title: formatText(res[1].trim()) });
 			} else {
 				props.entry.update({ title: "Untitled" });
 			}
@@ -180,7 +192,7 @@
 					contentType = CONTENT_TYPE_ALIAS[contentType];
 				}
 
-				text = res[2];
+				text = formatText(res[2]);
 			}
 
 			switch (contentType) {
@@ -189,6 +201,11 @@
 					await pen.save();
 					targetItem = pen;
 					break;
+        case "sub":
+          const entry = new Entry({ title: text });
+          await entry.save();
+          targetItem = entry;
+          break;
 				default:
 					const memo = new Memo({ content: text, contentType });
 					await memo.save();
@@ -196,13 +213,15 @@
 			}
 		} else if (text.startsWith("@")) {
 			const res = text.match(/^\s*@([^\s]{7})/im);
-			const id = res[1];
-			const entry = await Entry.fetch(id);
-			targetItem = entry;
+      if (res){
+        const id = res[1];
+        const entry = await Entry.fetch(id);
+        targetItem = entry;
+      }
 		}
 
 		if (!targetItem) {
-			const memo = new Memo({ content: text, contentType });
+			const memo = new Memo({ content: formatText(text), contentType });
 			await memo.save();
 			targetItem = memo;
 		}

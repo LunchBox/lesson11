@@ -133,7 +133,15 @@
 		}
 	}
 
+
+  const submitting = ref(false);
 	async function onSubmit() {
+    if (submitting.value || formData.content === null) {
+      return;
+    }
+
+    submitting.value = true;
+
 		let text = formData.content.trim();
 		let contentType = "markdown";
 
@@ -200,6 +208,7 @@
 		}
 
 		await attachItem(targetItem);
+    submitting.value = false;
 	}
 
 	watch(

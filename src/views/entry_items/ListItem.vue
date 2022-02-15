@@ -15,7 +15,10 @@
 						<a @click="merge">Merge</a>
 					</li>
 					<li>
-						<a @click="del">Del</a>
+						<a @click="detach">Detach (UnLink)</a>
+					</li>
+					<li>
+						<a @click="delItem">Delete Item</a>
 					</li>
 				</ul>
 			</div>
@@ -89,10 +92,21 @@
 		emit("merge", entryItem);
 	}
 
-	function del() {
+	function detach() {
 		const { entryItem } = props;
 		emit("delete", entryItem);
 	}
+
+  async function delItem() {
+    if (confirm("Are you sure?")){
+		  const { entryItem } = props;
+      const item = await entryItem.fetchItem();
+      if (item){
+        await item.destroy();
+		    emit("delete", entryItem);
+      }
+    }
+  }
 
 	const editing = ref(false);
 	function edit(e) {

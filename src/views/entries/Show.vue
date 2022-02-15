@@ -138,6 +138,10 @@
     margin: 1.35rem auto;
     clear: both;
   }
+
+  blockquote {
+    color: #999;
+  }
 </style>
 
 

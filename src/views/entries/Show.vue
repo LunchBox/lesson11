@@ -1,5 +1,7 @@
 <template>
-	<div v-if="loading">loading...</div>
+	<div v-if="loading">
+    <h2>loading...</h2>
+  </div>
 	<div v-else>
 		<h2 @dblclick="addToTabs">{{ entry.title }}</h2>
 

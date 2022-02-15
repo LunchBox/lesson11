@@ -360,7 +360,7 @@
 		box-sizing: border-box;
 		border: 1px solid #ccc;
 		border-radius: 2px;
-		margin: var(--p-margin) 0;
+		margin-top: calc(var(--p-margin) * 1.35);
 		cursor: pointer;
 
 		visibility: hidden;

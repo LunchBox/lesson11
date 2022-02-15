@@ -56,6 +56,9 @@
 </style>
 
 <style>
+  body{
+    overflow-y: scroll; 
+  }
 	#app {
 		font-family: Avenir, Helvetica, Arial, sans-serif;
 		-webkit-font-smoothing: antialiased;
@@ -75,6 +78,7 @@
 		max-width: 640px;
 		max-width: 56rem;
 		margin: 0 auto;
+    padding: 0 2em;
 	}
 
 	a {

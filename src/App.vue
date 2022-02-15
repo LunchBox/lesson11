@@ -48,10 +48,20 @@
 	}
 	.tabs li {
 		margin: 0 4px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    display: flex;
 	}
 	.tabs li a {
+    display: block;
 		text-decoration: none;
 		margin-right: 6px;
+    padding: 0 4px;
+
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 	}
 </style>
 
@@ -73,6 +83,11 @@
 
 		color: var(--color);
 	}
+
+  header{
+    font-family: monospace;
+    font-size: 12px;
+  }
 
 	main {
 		max-width: 640px;

@@ -24,7 +24,8 @@ export default class FileAttachment extends ActiveRecord {
 	}
 
 	get filePath() {
-		return `${import.meta.env.VITE_API_URL}${this.path}`;
+		// return `${import.meta.env.VITE_API_URL}${this.path}`;
+		return new URL(this.path, import.meta.env.VITE_API_URL).href;
 	}
 
 	async saveAttachment() {

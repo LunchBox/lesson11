@@ -1,7 +1,7 @@
 <template>
 	<div v-if="loading">
-    <h2>loading...</h2>
-  </div>
+		<h2>loading...</h2>
+	</div>
 	<div v-else>
 		<h2 @dblclick="addToTabs">{{ entry.title }}</h2>
 
@@ -39,8 +39,7 @@
 		loadEntry(loading, to.params.id);
 	});
 
-  console.log(import.meta.env.VITE_SOME_KEY);
-  console.log(import.meta.env);
+	console.log(import.meta.env);
 	// const runtimeHandler = (event) => {
 	// 	// console.log(event.data);
 	// 	const typeWhitelist = ["log", "image"];
@@ -106,9 +105,9 @@
 	}
 
 	code {
-    color: #eb5757;
-    padding: 0.2em 0.4em;
-    font-size: small;
+		color: #eb5757;
+		padding: 0.2em 0.4em;
+		font-size: small;
 	}
 
 	pre code {
@@ -131,19 +130,19 @@
 		padding: 0 !important;
 	}
 
-  hr {
-    height: 0;
-    border-right: 0;
-    border-top: 0;
-    border-bottom: 1px solid rgba(208, 208, 208, 1);
-    border-left: 0;
-    margin: 1.35rem auto;
-    clear: both;
-  }
+	hr {
+		height: 0;
+		border-right: 0;
+		border-top: 0;
+		border-bottom: 1px solid rgba(208, 208, 208, 1);
+		border-left: 0;
+		margin: 1.35rem auto;
+		clear: both;
+	}
 
-  blockquote {
-    color: #999;
-  }
+	blockquote {
+		color: #999;
+	}
 </style>
 
 

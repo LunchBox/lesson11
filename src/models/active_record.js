@@ -176,6 +176,10 @@ export default class ActiveRecord {
     });
 	}
 
+  get mark() {
+    return `${this.constructor.name}::${this.id}`;
+  }
+
 	mergeUpdate(attrs = {}) {
 		const config = this.constructor.attributes;
 		for (let key in config) {

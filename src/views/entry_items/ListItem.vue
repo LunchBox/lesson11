@@ -9,6 +9,9 @@
 			>
 				<ul>
 					<li>
+            <a @click.prevent="copyToClipboard">{{ entryItem.item.mark }}</a>
+					</li>
+					<li>
 						<a @click="edit">Edit</a>
 					</li>
 					<li>
@@ -59,6 +62,8 @@
 	import PenListItem from "../pens/Show.vue";
 	import FaListItem from "../file_attachments/Show.vue";
 	import EntryListItem from "../entries/ListItem.vue";
+
+  import copyToClipboard from "@/utils/copy_to_clipboard.js";
 
 	const componentMap = {
 		Memo: MemoListItem,

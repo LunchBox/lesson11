@@ -72,18 +72,22 @@
     overflow-y: scroll; 
   }
 	#app {
-		font-family: Avenir, Helvetica, Arial, sans-serif;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
 
 		--p-margin: 0.7rem;
 		--color: #2c3e50;
+    --color: rgb(55, 53, 47);
+		--font-family: Avenir, Helvetica, Arial, sans-serif;
+    --font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
     --font-size: 15px;
     --line-height: 1.5;
 
 		color: var(--color);
+    font-family: var(--font-family);
 		font-size: var(--font-size);
 		line-height: var(--line-height);
+
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 
   header{
@@ -103,14 +107,13 @@
 	}
 
 	textarea {
-		font-family: Avenir, Helvetica, Arial, sans-serif;
-		-webkit-font-smoothing: antialiased;
-		-moz-osx-font-smoothing: grayscale;
-
 		color: var(--color);
+    font-family: var(--font-family);
 		font-size: var(--font-size);
 		line-height: var(--line-height);
 
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 		-webkit-text-size-adjust: 100%;
 		-webkit-tap-highlight-color: transparent;
 	}

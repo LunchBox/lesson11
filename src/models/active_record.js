@@ -95,6 +95,9 @@ export default class ActiveRecord {
   }
 
 	static async create(model) {
+    model.createdAt = new Date();
+    model.updatedAt = model.createdAt;
+
 		const data = JSON.stringify(model, propertyFilter);
 		const res = await axios.post(
 			`/api/${this.modelKey}${this.defaultExt}`,
@@ -110,7 +113,9 @@ export default class ActiveRecord {
 
 	static async update(model, attrs) {
 		const { id, ...rest } = model;
-		const data = JSON.stringify(attrs, propertyFilter);
+    const updated_attrs = { ...rest, ...attrs, updatedAt: new Date() };
+
+		const data = JSON.stringify(updated_attrs, propertyFilter);
 		const res = await axios.put(
 			`/api/${this.modelKey}/${id}${this.defaultExt}`,
 			data,
@@ -159,6 +164,16 @@ export default class ActiveRecord {
 		this.constructor.attrsAccssor.forEach((key) => {
 			this[key] = attrs[key] || null;
 		});
+
+    ["createdAt", "updatedAt"].forEach((key) => {
+      if (attrs[key]) {
+        if (typeof attrs[key] === "string"){
+          this[key] = new Date(attrs[key]);
+        } else if (attrs[key] instanceof Date) {
+          this[key] = attrs[key];
+        } 
+      }
+    });
 	}
 
 	mergeUpdate(attrs = {}) {
@@ -189,8 +204,7 @@ export default class ActiveRecord {
 		await this.beforeSave();
 		await this.beforeUpdate();
 
-		const { id, ...rest } = this;
-		await this.constructor.update(this, { ...rest, ...attrs });
+    await this.constructor.update(this, attrs);
 
 		await this.afterUpdate();
 		await this.afterSave();

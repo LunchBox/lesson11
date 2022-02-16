@@ -376,7 +376,7 @@
 		box-sizing: border-box;
 		border: 1px solid #ccc;
 		border-radius: 2px;
-		margin-top: calc(var(--p-margin) * 1.35);
+		margin-top: calc(var(--p-margin) * 1.3);
 		cursor: pointer;
 
 		visibility: hidden;

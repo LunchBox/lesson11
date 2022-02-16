@@ -27,6 +27,7 @@
 	import Pen from "@/models/pen.js";
 	import EntryItem from "@/models/entry_item.js";
 	import FileAttachment from "@/models/file_attachment.js";
+	import entryItemTypes from "@/models/entry_item_types.js";
 
 	import autosize from "autosize";
 
@@ -133,25 +134,24 @@
 		}
 	}
 
+	function formatText(text) {
+		let d = new Date();
+		let ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
+		let mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
+		let da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
 
-function formatText(text){
-  let d = new Date();
-  let ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d);
-  let mo = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(d);
-  let da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d);
+		const r = `${ye}-${mo}-${da}`;
 
-  const r = `${ye}-${mo}-${da}`;
-  
-  return text.replaceAll(/@date($|\s)/ig, `${ye}-${mo}-${da}$1`);
-}
+		return text.replaceAll(/@date($|\s)/gi, `${ye}-${mo}-${da}$1`);
+	}
 
-  const submitting = ref(false);
+	const submitting = ref(false);
 	async function onSubmit() {
-    if (submitting.value || formData.content === null) {
-      return;
-    }
+		if (submitting.value || formData.content === null) {
+			return;
+		}
 
-    submitting.value = true;
+		submitting.value = true;
 
 		let text = formData.content.trim();
 		let contentType = "markdown";
@@ -164,7 +164,8 @@ function formatText(text){
 			"html",
 			"css",
 			"pen",
-      "sub",
+			"sub",
+			"fork",
 		];
 
 		const CONTENT_TYPE_ALIAS = {
@@ -201,11 +202,22 @@ function formatText(text){
 					await pen.save();
 					targetItem = pen;
 					break;
-        case "sub":
-          const entry = new Entry({ title: text });
-          await entry.save();
-          targetItem = entry;
-          break;
+				case "sub":
+					const entry = new Entry({ title: text });
+					await entry.save();
+					targetItem = entry;
+					break;
+				case "fork":
+					const res = text.match(/([^\s]+)::([^\s]+)/im);
+					if (res) {
+						const C = entryItemTypes[res[1]];
+						const target = await C.fetch(res[2]);
+						const { id, ...rest } = target;
+						const clone = new C(rest);
+						await clone.save();
+						targetItem = clone;
+					}
+					break;
 				default:
 					const memo = new Memo({ content: text, contentType });
 					await memo.save();
@@ -213,11 +225,18 @@ function formatText(text){
 			}
 		} else if (text.startsWith("@")) {
 			const res = text.match(/^\s*@([^\s]{7})/im);
-      if (res){
-        const id = res[1];
-        const entry = await Entry.fetch(id);
-        targetItem = entry;
-      }
+			if (res) {
+				const id = res[1];
+				const entry = await Entry.fetch(id);
+				targetItem = entry;
+			}
+		} else {
+			const res = text.match(/^([^\s]+)::([^\s]+)$/im);
+			if (res) {
+				const C = entryItemTypes[res[1]];
+				const target = await C.fetch(res[2]);
+				targetItem = target;
+			}
 		}
 
 		if (!targetItem) {
@@ -227,7 +246,7 @@ function formatText(text){
 		}
 
 		await attachItem(targetItem);
-    submitting.value = false;
+		submitting.value = false;
 	}
 
 	watch(

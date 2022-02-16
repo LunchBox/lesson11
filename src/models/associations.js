@@ -5,6 +5,8 @@ import Memo from "./memo.js";
 import Pen from "./pen.js";
 import FileAttachment from "./file_attachment.js";
 
+import entryItemTypes from "./entry_item_types.js";
+
 // Entry
 Entry.hasMany("entryItems", {
 	className: EntryItem,
@@ -25,7 +27,7 @@ EntryItem.belongsTo("entry", {
 
 EntryItem.hasOne("item", {
 	polymorphic: true,
-	allowItemTypes: { Entry, Memo, Pen, FileAttachment },
+	allowItemTypes: entryItemTypes,
 	afterDestroy: async function (item) {
 		if (item instanceof Memo) {
 			await item.destroy();

@@ -42,6 +42,7 @@
 	import { ref, computed, watch, onBeforeUnmount } from "vue";
 	import Entry from "@/models/entry.js";
 	import EntryItem from "@/models/entry_item.js";
+	import Memo from "@/models/memo.js";
 
 	import EntryItemForm from "./Form.vue";
 	import ListItem from "./ListItem.vue";
@@ -160,6 +161,21 @@
 		const pos = entry.entryItemIds.indexOf(entryItem.id);
 
 		const item = await entryItem.fetchItem();
+
+    // merge the title
+    if (item.title && item.title.trim() !== ""){
+      const memo = new Memo({ content: `## ${item.title.trim()}`, contentType: "markdown" });
+      await memo.save();
+
+      const entryItem = new EntryItem({});
+      entryItem.item = memo;
+      entryItem.entryId = item.id;
+
+      entryItem.$position = -1;
+      await entryItem.create();
+    }
+
+    await item.reload();
 
 		entry.entryItemIds.splice(pos, 0, ...item.entryItemIds);
 		await entry.update();

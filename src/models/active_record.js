@@ -90,6 +90,10 @@ export default class ActiveRecord {
 		}
 	}
 
+  async reload(){
+    await this.constructor.fetch(this.id);
+  }
+
 	static async create(model) {
 		const data = JSON.stringify(model, propertyFilter);
 		const res = await axios.post(

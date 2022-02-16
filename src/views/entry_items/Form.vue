@@ -208,7 +208,7 @@
 					targetItem = entry;
 					break;
 				case "fork":
-					const res = text.match(/([^\s]+)::([^\s]+)/im);
+					const res = text.match(/([^\s]+)::([^\s]+)$/i);
 					if (res) {
 						const C = entryItemTypes[res[1]];
 						const target = await C.fetch(res[2]);
@@ -231,7 +231,7 @@
 				targetItem = entry;
 			}
 		} else {
-			const res = text.match(/^([^\s]+)::([^\s]+)$/im);
+			const res = text.match(/^([^\s]+)::([^\s]+)$/i);
 			if (res) {
 				const C = entryItemTypes[res[1]];
 				const target = await C.fetch(res[2]);

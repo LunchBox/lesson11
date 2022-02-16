@@ -51,7 +51,7 @@ export default class Pen extends ActiveRecord {
 	}
 
 	get cacheUrl() {
-		return `http://localhost:9090/${this.cachePath}`;
+		return `${import.meta.env.VITE_API_URL}${this.cachePath}`;
 	}
 
 	async fileize() {

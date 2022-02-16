@@ -39,6 +39,8 @@
 		loadEntry(loading, to.params.id);
 	});
 
+  console.log(import.meta.env.VITE_SOME_KEY);
+  console.log(import.meta.env);
 	// const runtimeHandler = (event) => {
 	// 	// console.log(event.data);
 	// 	const typeWhitelist = ["log", "image"];

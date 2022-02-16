@@ -48,10 +48,12 @@
 	}
 	.tabs li {
 		margin: 0 4px;
-    border: 1px solid #ccc;
     border-radius: 2px;
     display: flex;
 	}
+  .tabs li:hover {
+    background: #eee;
+  }
 	.tabs li a {
     display: block;
 		text-decoration: none;

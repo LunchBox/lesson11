@@ -15,6 +15,9 @@
 						<a @click="merge">Merge</a>
 					</li>
 					<li>
+						<a @click="convToTitle">Convert To Title</a>
+					</li>
+					<li>
 						<a @click="detach">Detach (UnLink)</a>
 					</li>
 					<li>
@@ -97,8 +100,8 @@
 		emit("delete", entryItem);
 	}
 
-  async function delItem() {
-    if (confirm("Are you sure?")){
+  async function delItem(force = false) {
+    if (force || confirm("Are you sure?")){
 		  const { entryItem } = props;
       const item = await entryItem.fetchItem();
       if (item){
@@ -106,6 +109,17 @@
 		    emit("delete", entryItem);
       }
     }
+  }
+
+  async function convToTitle() {
+		  const { entry, entryItem } = props;
+      if (entryItem.itemType === "Memo" && confirm("Are you sure?")) {
+        const memo = await entryItem.fetchItem();
+        if (memo.content && memo.content.trim() !== ""){
+          await entry.update({ title: memo.content.trim() });
+          await delItem(true);
+        }
+      }
   }
 
 	const editing = ref(false);

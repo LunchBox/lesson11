@@ -106,9 +106,9 @@
 	}
 
 	code {
-		background: rgba(135, 131, 120, 0.15);
-		color: #eb5757;
-		padding: 0.2em 0.4em;
+    color: #eb5757;
+    padding: 0.2em 0.4em;
+    font-size: small;
 	}
 
 	pre code {

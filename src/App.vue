@@ -7,7 +7,7 @@
 		loading.value = false;
 	});
 
-	const entries = computed(() => (Config.global && Config.global.entries) || []);
+  const entries = computed(() => (Config.global && Config.global.entries.filter(e => e)) || []);
 
 	async function remove(entry) {
 		const g = Config.global;

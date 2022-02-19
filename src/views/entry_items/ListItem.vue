@@ -8,8 +8,10 @@
 				@click.stop="showMenus = false"
 			>
 				<ul>
-					<li>
-            <a @click.prevent="copyToClipboard">{{ entryItem.item.mark }}</a>
+					<li v-if="entryItem.item">
+						<a @click.prevent="copyToClipboard">
+							{{ entryItem.item.mark }}
+						</a>
 					</li>
 					<li>
 						<a @click="edit">Edit</a>
@@ -23,7 +25,7 @@
 					<li>
 						<a @click="detach">Detach (UnLink)</a>
 					</li>
-					<li>
+					<li v-if="entryItem.item">
 						<a @click="delItem">Delete Item</a>
 					</li>
 				</ul>
@@ -63,7 +65,7 @@
 	import FaListItem from "../file_attachments/Show.vue";
 	import EntryListItem from "../entries/ListItem.vue";
 
-  import copyToClipboard from "@/utils/copy_to_clipboard.js";
+	import copyToClipboard from "@/utils/copy_to_clipboard.js";
 
 	const componentMap = {
 		Memo: MemoListItem,
@@ -105,27 +107,27 @@
 		emit("delete", entryItem);
 	}
 
-  async function delItem(force = false) {
-    if (force || confirm("Are you sure?")){
-		  const { entryItem } = props;
-      const item = await entryItem.fetchItem();
-      if (item){
-        await item.destroy();
-		    emit("delete", entryItem);
-      }
-    }
-  }
+	async function delItem(force = false) {
+		if (force || confirm("Are you sure?")) {
+			const { entryItem } = props;
+			const item = await entryItem.fetchItem();
+			if (item) {
+				await item.destroy();
+				emit("delete", entryItem);
+			}
+		}
+	}
 
-  async function convToTitle() {
-		  const { entry, entryItem } = props;
-      if (entryItem.itemType === "Memo" && confirm("Are you sure?")) {
-        const memo = await entryItem.fetchItem();
-        if (memo.content && memo.content.trim() !== ""){
-          await entry.update({ title: memo.content.trim() });
-          await delItem(true);
-        }
-      }
-  }
+	async function convToTitle() {
+		const { entry, entryItem } = props;
+		if (entryItem.itemType === "Memo" && confirm("Are you sure?")) {
+			const memo = await entryItem.fetchItem();
+			if (memo.content && memo.content.trim() !== "") {
+				await entry.update({ title: memo.content.trim() });
+				await delItem(true);
+			}
+		}
+	}
 
 	const editing = ref(false);
 	function edit(e) {

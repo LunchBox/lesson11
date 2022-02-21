@@ -136,7 +136,7 @@
 		border-top: 0;
 		border-bottom: 1px solid rgba(208, 208, 208, 1);
 		border-left: 0;
-		margin: 1.35rem auto;
+		margin: calc(1.5rem /2) auto;
 		clear: both;
 	}
 

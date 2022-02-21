@@ -1,9 +1,9 @@
 <template>
 	<div v-if="entryItem" class="entry-item list-item">
 		<div class="entry-item__menus">
-			<span class="icon" @click="showMenus = true"></span>
+			<span class="icon" @click.stop="showMenus = true"></span>
 			<div
-				v-if="isSelected && showMenus"
+				v-if="showMenus"
 				class="menus"
 				@click.stop="showMenus = false"
 			>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-	import { ref, computed, watch } from "vue";
+	import { ref, computed, watch, onBeforeUnmount } from "vue";
 
 	import Entry from "@/models/entry.js";
 	import EntryItem from "@/models/entry_item.js";
@@ -82,14 +82,16 @@
 
 	const emit = defineEmits(["after-submit", "merge", "delete"]);
 
-	watch(
-		() => props.isSelected,
-		(newVal) => {
-			if (!newVal) {
-				showMenus.value = false;
-			}
-		}
-	);
+  const hideMenus = (e) => {
+    e.preventDefault();
+    showMenus.value = false;
+  }
+
+  document.addEventListener("click", hideMenus);
+  onBeforeUnmount(() => {
+    document.removeEventListener("click", hideMenus);
+  })
+
 
 	const showMenus = ref(false);
 

@@ -272,17 +272,18 @@
 	}
 	.gform form .upload-file {
 		position: absolute;
-		left: -2em;
+		left: -1.5em;
 	}
 	.gform form .upload-file label {
 		display: inline-block;
-		width: 1em;
-		height: 1em;
-		overflow: hidden;
-
+		width: 6px;
+		height: 6px;
 		box-sizing: border-box;
-		border: 1px solid tomato;
-		border-radius: 2px;
+		border-radius: 50%;
+    background: tomato;
+    position: absolute;
+    top: calc((1.5rem - 6px) /2);
+		cursor: pointer;
 	}
 	.gform form .upload-file label input {
 		display: none;

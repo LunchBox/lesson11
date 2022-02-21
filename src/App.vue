@@ -74,6 +74,8 @@
 	#app {
 
 		--p-margin: 0.7rem;
+		--p-margin: 0.25rem;
+		--p-margin: 0;
 		--color: #2c3e50;
     --color: rgb(55, 53, 47);
 		--font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -119,7 +121,7 @@
 	}
 
 	footer {
-		height: 10em;
+		height: calc(100vh - 6em);
 	}
 
 	::placeholder {

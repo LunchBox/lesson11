@@ -361,33 +361,51 @@
 		position: relative;
 	}
 
+  .entry-item.list-item {
+    margin: 0.5em 0;
+  }
+
 	.entry-item__menus {
 		width: 2em;
 		height: 100%;
 
 		position: absolute;
-		left: -2em;
+		left: -1.5em;
 	}
 
 	.entry-item__menus .icon {
 		display: inline-block;
-		width: 1em;
-		height: 1em;
-		box-sizing: border-box;
-		border: 1px solid #ccc;
-		border-radius: 2px;
-		margin-top: calc(var(--p-margin) * 1.3);
+		width: 14px;
+		height: 14px;
+ 
+		border-radius: 50%;
+    background: transparent;
+    position: absolute;
+    top: calc((1.5rem - 14px) /2);
 		cursor: pointer;
-
-		visibility: hidden;
 	}
 
-	.entry-item.selected .entry-item__menus .icon {
-		visibility: visible;
+  .entry-item__menus .icon:before {
+    content: " ";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    
+    top: 4px;
+    left: 4px;
+    
+    background: #eee;
+    border-radius: 50%;
+  }
+
+	.entry-item.selected .entry-item__menus .icon:before {
+    background: #333;
 	}
 
 	.entry-item__menus .menus {
 		position: absolute;
+    top: 20px;
+
 		z-index: 1;
 		margin-top: 2px;
 

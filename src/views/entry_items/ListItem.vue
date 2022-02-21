@@ -83,7 +83,7 @@
 	const emit = defineEmits(["after-submit", "merge", "delete"]);
 
   const hideMenus = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     showMenus.value = false;
   }
 

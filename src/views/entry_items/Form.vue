@@ -95,9 +95,11 @@
 	}
 
 	function focusOnInput() {
-		inputField.value.style.height = "1.5em";
-		autosize(inputField.value);
-		inputField.value.focus();
+    if (inputField.value) {
+      inputField.value.style.height = "1.5em";
+      autosize(inputField.value);
+      inputField.value.focus();
+    }
 	}
 
 	onMounted(() => {
@@ -265,6 +267,7 @@
 <style scoped>
 	.gform {
 		margin: var(--p-margin) 0;
+    margin: 0.5em 0;
 		position: relative;
 	}
 	.gform form {
@@ -276,15 +279,27 @@
 	}
 	.gform form .upload-file label {
 		display: inline-block;
-		width: 6px;
-		height: 6px;
-		box-sizing: border-box;
+		width: 14px;
+		height: 14px;
+ 
 		border-radius: 50%;
-    background: tomato;
+    background: transparent;
     position: absolute;
-    top: calc((1.5rem - 6px) /2);
+    top: calc((1.5rem - 14px) /2);
 		cursor: pointer;
 	}
+  .gform form .upload-file label:before {
+    content: " ";
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    
+    top: 4px;
+    left: 4px;
+    
+    background: #eee;
+    border-radius: 50%;
+  }
 	.gform form .upload-file label input {
 		display: none;
 	}

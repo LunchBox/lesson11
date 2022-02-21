@@ -70,6 +70,8 @@
 <style>
   body{
     overflow-y: scroll; 
+    margin: 0;
+    padding: 0;
   }
 	#app {
 
@@ -95,6 +97,12 @@
   header{
     font-family: monospace;
     font-size: 12px;
+    padding: .5em;
+
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
 
 	main {

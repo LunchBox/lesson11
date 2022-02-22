@@ -145,7 +145,7 @@
 	.toolbar {
 		background: #f5f7fa;
 		font-family: monospace;
-		padding: 4px 0.5em;
+		padding: 0 0.5em;
 		margin-bottom: var(--p-margin);
 	}
 

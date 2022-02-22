@@ -4,6 +4,9 @@
 		<div class="rel-path" @click="copyToClipboard">
 			{{ fa.path }}
 		</div>
+    <div v-if="fa.contentType.startsWith('image')" class="thumb">
+      <img :src="fa.filePath" :alt="fa.filename" @click="toggleImg" />
+    </div>
 	</div>
 </template>
 
@@ -18,6 +21,15 @@
 	});
 
 	const fa = computed(() => props.item);
+
+  function toggleImg(e) {
+    const img = e.target;
+    if (img.classList.contains("active")){
+      img.classList.remove("active");
+    } else {
+      img.classList.add("active");
+    }
+  }
 </script>
 
 <style scoped>
@@ -25,4 +37,20 @@
 		margin: var(--p-margin) 0;
 		position: relative;
 	}
+
+  .thumb img{
+    max-width: 100%;
+    max-height: 120px;
+    image-orientation: from-image;
+    cursor: pointer;
+    object-fit: cover;
+    border: 2px solid #ccc;
+    border-radius: 2px;
+  }
+
+  .thumb img.active {
+    max-height: none;
+  }
+
+  
 </style>

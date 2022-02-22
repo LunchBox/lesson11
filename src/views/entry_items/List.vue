@@ -444,7 +444,7 @@
 	.entry-item.selected .entry-item__content:before {
 		content: " ";
 		position: absolute;
-		left: -0.5em;
+		left: -6px;
 		top: 0;
 		bottom: 0;
 		width: 2px;

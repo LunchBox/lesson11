@@ -200,7 +200,15 @@
 
 			switch (contentType) {
 				case "pen":
-					const pen = new Pen({ html: text });
+          const attrs = {};
+          const m = text.trim().match(/([^\s]+\.js$)/im);
+          if (m) {
+            attrs.js = `import "${text.trim()}"`;
+          } else {
+            attrs.html = text;
+          }
+          
+					const pen = new Pen(attrs);
 					await pen.save();
 					targetItem = pen;
 					break;

@@ -9,6 +9,8 @@
 
   const entries = computed(() => (Config.global && Config.global.entries.filter(e => e).reverse()) || []);
 
+  const showAside = ref(false);
+
 	async function remove(entry) {
 		const g = Config.global;
 		const idx = g.entryIds.indexOf(entry.id);
@@ -20,10 +22,14 @@
 </script>
 
 <template>
+  <div v-if="!showAside" style="position: fixed; padding: 0.5em;">
+    <a href="#" @click="showAside = true">Aside</a> &nbsp;
+    <router-link to="/entries">Entries</router-link>
+  </div>
   <div style="display: flex;">
-    <aside>
+    <aside v-if="showAside">
+      <a href="#" @click="showAside = false" style="float: right;">Hide</a> &nbsp;
       <router-link to="/entries">Entries</router-link>
-      &middot;
 
       <ul v-if="!loading" class="menus">
         <li v-for="entry in entries" :key="entry.id">
@@ -105,6 +111,7 @@
     flex: 0 0 280px;
 
     border-right: 1px solid rgb(204, 213, 221);
+    background: #f5f7fa;
   }
 
   main {

@@ -98,11 +98,6 @@
     font-family: monospace;
     font-size: 12px;
     padding: .5em;
-
-    background: #fff;
-    position: sticky;
-    top: 0;
-    z-index: 1;
   }
 
 	main {

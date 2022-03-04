@@ -17,6 +17,12 @@
 						<a @click="edit">Edit</a>
 					</li>
 					<li>
+            <div class="inline-btn-group">
+              <a @click="toRole()">N</a>
+              <a v-for="role in Memo.ROLES" :key="role" @click="toRole(role)">{{ role }}</a>
+            </div>
+					</li>
+					<li>
 						<a @click="merge">Merge</a>
 					</li>
 					<li>
@@ -57,6 +63,7 @@
 
 	import Entry from "@/models/entry.js";
 	import EntryItem from "@/models/entry_item.js";
+	import Memo from "@/models/memo.js";
 
 	import EntryItemForm from "./Form.vue";
 
@@ -153,7 +160,39 @@
 		editing.value = false;
 		emit("after-submit");
 	}
+
+  async function toRole(role = null){
+    const { entryItem } = props;
+    if (entryItem.itemType === "Memo") {
+      const item = await entryItem.fetchItem();
+      if (item) {
+        item.role = role;
+        await item.save();
+        afterSubmit();
+      }
+    }
+  }
+
 </script>
 
 <style scoped>
+  .inline-btn-group {
+    display: flex !important;
+    margin: 4px 0;
+  }
+
+  .inline-btn-group a {
+    border: 1px solid #eee;
+    border-radius: 1px;
+    height: 24px;
+    width: 24px;
+    padding: 0;
+    display: flex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
 </style>

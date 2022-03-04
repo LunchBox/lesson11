@@ -4,9 +4,19 @@ import axios from "axios";
 export default class Memo extends ActiveRecord {
 	static modelKey = "memos";
 
+  static ROLES = [
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6"
+  ];
 	static attributes = {
 		content: { type: "text", default: null },
 		contentType: { type: "string", default: "markdown" },
+    role: { type: "string", default: null }, 
+    color: { type: "string", default: null }
 	};
 
 	get isMarkdown() {

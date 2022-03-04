@@ -275,7 +275,8 @@
 <style scoped>
 	.gform {
 		margin: var(--p-margin) 0;
-    margin: 0.5em 0;
+    margin-top: calc((26px - 1em * 1.5)/ 2);
+    margin-bottom: calc((26px - 1em * 1.5)/ 2);
 		position: relative;
 	}
 	.gform form {

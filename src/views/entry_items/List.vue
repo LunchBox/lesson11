@@ -362,7 +362,8 @@
 	}
 
   .entry-item.list-item {
-    margin: 0.5em 0;
+    margin-top: calc((26px - 1em * 1.5)/ 2);
+    margin-bottom: calc((26px - 1em * 1.5)/ 2);
   }
 
 	.entry-item__menus {

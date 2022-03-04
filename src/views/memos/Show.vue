@@ -5,7 +5,7 @@
 			:memo="memo"
 			@after-submit="$emit('after-submit')"
 		/>
-		<div v-else class="memo">
+		<div v-else class="memo" :class="memoClass">
 			<div v-if="memo.isMarkdown" v-html="mdContent"></div>
 			<div v-else v-highlight>
 				<pre><code :class="`language-${memo.contentType}`">{{ memo.content }}</code></pre>
@@ -66,6 +66,14 @@
 
 	const memo = computed(() => props.item);
 
+  const memoClass = computed(() => {
+    const cs = [];
+    // if (memo.value.role !== null){
+      cs.push(memo.value.role);
+    // }
+    return cs;
+  });
+
 	const mdContent = computed(() => {
 		if (memo.value) {
 			return marked(memo.value.content);
@@ -81,3 +89,40 @@
 		margin: var(--p-margin) 0;
 	}
 </style>
+<style>
+  .memo h1,
+  .memo h2,
+  .memo h3,
+  .memo h4,
+  .memo h5,
+  .memo h6 {
+    font-size: 1em;
+    margin: 0;
+  }
+
+  .memo.h1 {
+    font-size: 2em;
+    font-weight: bold;
+  }
+  .memo.h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  .memo.h3 {
+    font-size: 1.17em;
+    font-weight: bold;
+  }
+  .memo.h4 {
+    font-size: 1em;
+    font-weight: bold;
+  }
+  .memo.h5 {
+    font-size: 0.83em;
+    font-weight: bold;
+  }
+  .memo.h6 {
+    font-size: 0.67em;
+    font-weight: bold;
+  }
+</style>
+

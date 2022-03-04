@@ -1,5 +1,6 @@
 <script setup>
 	import { ref, computed } from "vue";
+  import { useRoute } from "vue-router";
 	import Config from "@/models/config";
 
 	const loading = ref(true);
@@ -22,13 +23,12 @@
 </script>
 
 <template>
-  <div v-if="!showAside" style="position: fixed; padding: 0.5em;">
-    <a href="#" @click="showAside = true">Aside</a> &nbsp;
-    <router-link to="/entries">Entries</router-link>
+  <div v-if="!showAside" class="nav-mark">
+    <a href="#" @click.prevent="showAside = true">Aside</a>
   </div>
   <div style="display: flex;">
     <aside v-if="showAside">
-      <a href="#" @click="showAside = false" style="float: right;">Hide</a> &nbsp;
+      <a href="#" @click.prevent="showAside = false" style="float: right;">Hide</a>
       <router-link to="/entries">Entries</router-link>
 
       <ul v-if="!loading" class="menus">
@@ -175,6 +175,7 @@
   }
   ul.menus .btn:hover {
     background: #f5f7fa;
+    background: #e5e8ed;
   }
 
   .btn.del {
@@ -182,5 +183,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .nav-mark {
+    position: absolute;
+    padding: 0.5em;
+  }
+
+  .nav-mark a {
+    color: #ccc;
+  }
+  .nav-mark a:hover {
+    color: var(--color);
   }
 </style>

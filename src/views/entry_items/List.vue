@@ -365,6 +365,10 @@
     margin-top: calc((26px - 1em * 1.5)/ 2);
     margin-bottom: calc((26px - 1em * 1.5)/ 2);
   }
+  .entry-item.list-item.vc {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
 
 	.entry-item__menus {
 		width: 2em;

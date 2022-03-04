@@ -78,7 +78,7 @@
 		width: 100%;
 	}
 	.meta {
-		margin-bottom: var(--p-margin);
+    margin-bottom: 1em;
 		font-family: monospace;
 		color: #999;
 	}

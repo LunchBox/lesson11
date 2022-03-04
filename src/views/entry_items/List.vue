@@ -372,6 +372,9 @@
 
 		position: absolute;
 		left: -1.5em;
+
+    display: flex;
+    align-items: center;
 	}
 
 	.entry-item__menus .icon {
@@ -385,6 +388,10 @@
     top: calc((1.5rem - 14px) /2);
 		cursor: pointer;
 	}
+
+  .vc .entry-item__menus .icon {
+    top: auto;
+  }
 
   .entry-item__menus .icon:before {
     content: " ";

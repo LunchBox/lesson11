@@ -1,5 +1,5 @@
 <template>
-	<div v-if="entryItem" class="entry-item list-item">
+  <div v-if="entryItem" class="entry-item list-item" :class="{vc: entryItem?.item?.role}">
 		<div class="entry-item__menus">
 			<span class="icon" @click.stop="showMenus = true"></span>
 			<div

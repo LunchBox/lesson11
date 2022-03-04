@@ -7,7 +7,7 @@
 		loading.value = false;
 	});
 
-  const entries = computed(() => (Config.global && Config.global.entries.filter(e => e)) || []);
+  const entries = computed(() => (Config.global && Config.global.entries.filter(e => e).reverse()) || []);
 
 	async function remove(entry) {
 		const g = Config.global;
@@ -20,23 +20,29 @@
 </script>
 
 <template>
-	<header>
-		<router-link to="/entries">Entries</router-link>
-		&middot;
+  <div style="display: flex;">
+    <aside>
+      <router-link to="/entries">Entries</router-link>
+      &middot;
 
-		<ul class="tabs" v-if="!loading">
-			<li v-for="entry in entries" :key="entry.id">
-				<router-link :key="entry.id" :to="`/entries/${entry.id}`">
-					{{ entry.title }}
-				</router-link>
-				<a href="" class="del" @click.prevent="remove(entry)">x</a>
-			</li>
-		</ul>
-	</header>
-	<main>
-		<router-view></router-view>
-	</main>
-	<footer></footer>
+      <ul v-if="!loading" class="menus">
+        <li v-for="entry in entries" :key="entry.id">
+          <div>
+            <router-link :key="entry.id" :to="`/entries/${entry.id}`" class="btn">
+              {{ entry.title }}
+            </router-link>
+            <a href="" class="del btn" @click.prevent="remove(entry)">x</a>
+          </div>
+        </li>
+      </ul>
+    </aside>
+    <main>
+      <div class="container">
+        <router-view></router-view>
+      </div>
+      <footer></footer>
+    </main>
+  </div>
 </template>
 
 <style scoped>
@@ -94,13 +100,17 @@
 		-moz-osx-font-smoothing: grayscale;
 	}
 
-  header{
-    font-family: monospace;
-    font-size: 12px;
+  aside {
     padding: .5em;
+    flex: 0 0 280px;
+
+    border-right: 1px solid rgb(204, 213, 221);
   }
 
-	main {
+  main {
+    flex: 1;
+  }
+	main .container{
 		max-width: 640px;
 		max-width: 56rem;
 		margin: 0 auto;
@@ -137,4 +147,33 @@
 		font-style: italic;
 		font-size: smaller;
 	}
+
+
+  ul.menus li > div {
+    display: flex;
+  }
+
+  ul.menus li > div > a {
+    display: block;
+  }
+  
+  ul.menus li > div > a:first-child {
+    flex: 1;
+    margin-right: 2px;
+  }
+
+  ul.menus .btn {
+    padding: 0 0.5em;
+    border-radius: 2px;
+  }
+  ul.menus .btn:hover {
+    background: #f5f7fa;
+  }
+
+  .btn.del {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>

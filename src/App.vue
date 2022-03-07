@@ -2,6 +2,9 @@
 	import { ref, computed } from "vue";
   import { useRoute } from "vue-router";
 	import Config from "@/models/config";
+  
+  import { Icon } from '@vicons/utils'
+  import { OverflowMenuHorizontal, Home, ChevronLeft, Close } from '@vicons/carbon'
 
 	const loading = ref(true);
 	Config.preload().then(() => {
@@ -24,12 +27,18 @@
 
 <template>
   <div v-if="!showAside" class="nav-mark">
-    <a href="#" @click.prevent="showAside = true">Aside</a>
+    <a href="#" @click.prevent="showAside = true">
+      <Icon><OverflowMenuHorizontal /></Icon>
+    </a>
   </div>
   <div style="display: flex;">
     <aside v-if="showAside">
-      <a href="#" @click.prevent="showAside = false" style="float: right;">Hide</a>
-      <router-link to="/entries">Entries</router-link>
+      <a href="#" @click.prevent="showAside = false" style="float: right;">
+        <Icon><ChevronLeft /></Icon>
+      </a>
+      <router-link to="/entries">
+        <Icon><Home /></Icon>
+      </router-link>
 
       <ul v-if="!loading" class="menus">
         <li v-for="entry in entries" :key="entry.id">
@@ -37,7 +46,9 @@
             <router-link :key="entry.id" :to="`/entries/${entry.id}`" class="btn">
               {{ entry.title }}
             </router-link>
-            <a href="" class="del btn" @click.prevent="remove(entry)">x</a>
+            <a href="" class="del btn" @click.prevent="remove(entry)">
+              <Icon><Close /></Icon>
+            </a>
           </div>
         </li>
       </ul>
@@ -170,7 +181,7 @@
   }
 
   ul.menus .btn {
-    padding: 0 0.5em;
+    padding: 0 4px; 
     border-radius: 2px;
   }
   ul.menus .btn:hover {

@@ -18,6 +18,8 @@
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
+    "@vicons/carbon": "^0.12.0",
+    "@vicons/utils": "^0.1.4",
     "@vitejs/plugin-vue": "^2.0.0",
     "naive-ui": "^2.23.2",
     "vite": "^2.7.2"

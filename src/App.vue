@@ -11,26 +11,26 @@
 		loading.value = false;
 	});
 
-  const entries = computed(() => (Config.global && Config.global.entries.filter(e => e).reverse()) || []);
+  const longTermEntries = computed(() => (Config.global && Config.global.entries.filter(e => e).reverse()) || []);
+  const shortTermEntries = computed(() => (Config.global && Config.global.shortTermEntries.filter(e => e).reverse()) || []);
+
 
   const showAside = ref(false);
 
-	async function remove(entry) {
+	async function removeST(entry) {
 		const g = Config.global;
-		const idx = g.entryIds.indexOf(entry.id);
-		if (idx > -1) {
-			g.entryIds.splice(idx, 1);
-		}
+    g.stIds.remove(entry.id);
+		await g.update();
+	}
+
+	async function removeLT(entry) {
+		const g = Config.global;
+    g.entryIds.remove(entry.id);
 		await g.update();
 	}
 </script>
 
 <template>
-  <div v-if="!showAside" class="nav-mark">
-    <a href="#" @click.prevent="showAside = true">
-      <Icon><OverflowMenuHorizontal /></Icon>
-    </a>
-  </div>
   <div style="display: flex;">
     <aside v-if="showAside">
       <a href="#" @click.prevent="showAside = false" style="float: right;">
@@ -41,12 +41,12 @@
       </router-link>
 
       <ul v-if="!loading" class="menus">
-        <li v-for="entry in entries" :key="entry.id">
+        <li v-for="entry in longTermEntries" :key="entry.id">
           <div>
             <router-link :key="entry.id" :to="`/entries/${entry.id}`" class="btn">
               {{ entry.title }}
             </router-link>
-            <a href="" class="del btn" @click.prevent="remove(entry)">
+            <a href="" class="del btn" @click.prevent="removeLT(entry)">
               <Icon><Close /></Icon>
             </a>
           </div>
@@ -54,6 +54,23 @@
       </ul>
     </aside>
     <main>
+      <div>
+        <ul v-if="!loading" class="tabs">
+          <li>
+            <a href="#" @click.prevent="showAside = true">
+              <Icon><OverflowMenuHorizontal /></Icon>
+            </a>
+          </li>
+          <li v-for="entry in shortTermEntries" :key="entry.id">
+            <router-link :key="entry.id" :to="`/entries/${entry.id}`" class="btn">
+              {{ entry.title }}
+            </router-link>
+            <a href="" class="del btn" @click.prevent="removeST(entry)">
+              <Icon><Close /></Icon>
+            </a>
+          </li>
+        </ul>
+      </div>
       <div class="container">
         <router-view></router-view>
       </div>
@@ -67,20 +84,20 @@
 		margin: 0;
 		padding: 0;
 		list-style: none;
-		display: inline-flex;
+		display: flex;
+    align-items: center;
+    height: 2em;
 	}
 	.tabs li {
 		margin: 0 4px;
     border-radius: 2px;
     display: flex;
 	}
-  .tabs li:hover {
-    background: #eee;
-  }
 	.tabs li a {
-    display: block;
+    display: flex;
+    align-items: center;
+
 		text-decoration: none;
-		margin-right: 6px;
     padding: 0 4px;
 
     max-width: 120px;
@@ -88,6 +105,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 	}
+  .tabs li a:hover {
+    background: #eee;
+  }
 </style>
 
 <style>

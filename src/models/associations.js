@@ -40,3 +40,8 @@ Config.hasMany("entries", {
 	className: Entry,
 	collectionKey: "entryIds",
 });
+
+Config.hasMany("shortTermEntries", {
+	className: Entry,
+	collectionKey: "stIds",
+});

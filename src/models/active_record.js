@@ -1,8 +1,10 @@
 import { reactive } from "vue";
 import propertyFilter from "../utils/property_filter.js";
 import axios from "axios";
-import _ from "lodash";
+// import _ from "lodash";
 import path from "path";
+
+import "./active_support.js";
 
 const CALLBACKS = [
 	"beforeCreate",
@@ -269,7 +271,7 @@ export default class ActiveRecord {
 			);
 		}
 
-		const cName = _.capitalize(associationName);
+    const cName = associationName.capitalize();
 		const fetchMethod = `fetch${cName}`;
 
 		Object.defineProperty(this.prototype, associationName, {
@@ -355,7 +357,7 @@ export default class ActiveRecord {
 		// entry => Entry
 		// config => Config
 		// item => Item
-		const cName = _.capitalize(associationName);
+    const cName = associationName.capitalize();
 		const fetchMethod = `fetch${cName}`;
 
 		// 多態

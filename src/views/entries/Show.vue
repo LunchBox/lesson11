@@ -3,7 +3,10 @@
 		<h2>loading...</h2>
 	</div>
 	<div v-else>
-		<h2 @dblclick="addToTabs">{{ entry.title }}</h2>
+		<h2>
+      <span @dblclick="addToLongTermEntries" :class="{ active: isMarked }">#LT</span> &middot;
+      <span @dblclick="addToShortTermEntries">{{ entry.title }}</span>
+    </h2>
 
 		<div class="meta">
 			<span @click.prevent="copyToClipboard">
@@ -28,6 +31,9 @@
 	import EntryItemList from "../entry_items/List.vue";
 
 	import { loadEntry, syncScript } from "./helper";
+
+  import { Icon } from '@vicons/utils'
+  import { Bookmark, BookmarkFilled } from '@vicons/carbon'
 
 	const route = useRoute();
 	const entry = computed(() => Entry.find(route.params.id));
@@ -63,14 +69,30 @@
 		// syncScript(entry.value);
 	}
 
-	async function addToTabs() {
-		if (Config.global && entry.value) {
-			if (!Config.global.entryIds.includes(entry.value.id)) {
-				Config.global.entryIds.push(entry.value.id);
-				await Config.global.update();
-			}
-		}
+	async function addToShortTermEntries() {
+    if (Config.global && entry.value) {
+      if (!Config.global.stIds.includes(entry.value.id)) {
+        Config.global.stIds.push(entry.value.id);
+        await Config.global.update();
+      }
+    }
 	}
+
+	async function addToLongTermEntries() {
+    if (Config.global && entry.value) {
+      if (!Config.global.entryIds.includes(entry.value.id)) {
+        Config.global.entryIds.push(entry.value.id);
+        await Config.global.update();
+      }
+    }
+	}
+
+  const isMarked = computed(() =>{
+    if (Config.global && entry.value) {
+      return Config.global.entryIds.includes(entry.value.id);
+    }
+    return false;
+  });
 </script>
 
 <style scoped>
@@ -143,6 +165,10 @@
 	blockquote {
 		color: #999;
 	}
+
+  h2 .active {
+    color: tomato;
+  }
 </style>
 
 

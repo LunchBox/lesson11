@@ -12,6 +12,7 @@
 			<span @click.prevent="copyToClipboard">
 				{{ entry.mark }}
 			</span>
+      <a href="#" @click.prevent="fileize">fileize</a>
 		</div>
 
 		<EntryItemList :entry="entry" @after-submit="afterSubmit" />
@@ -93,6 +94,14 @@
     }
     return false;
   });
+
+  async function fileize() {
+    console.log(entry.value);
+    if (entry.value) {
+      const res = await entry.value.fileize();
+      window.open(entry.value.fullPath, '_blank').focus();
+    }
+  }
 </script>
 
 <style scoped>
@@ -109,6 +118,7 @@
 		font-size: smaller;
 
 		cursor: pointer;
+    margin-right: .5em;
 	}
 </style>
 

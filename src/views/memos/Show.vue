@@ -10,7 +10,7 @@
 			<div v-else v-highlight>
 				<pre><code :class="`language-${memo.contentType}`">{{ memo.content }}</code></pre>
 				<div class="rel-path" @click="copyToClipboard">
-					/memos_cache/{{ memo.cacheFilename }}
+					{{ memo.resourcePath }}
 				</div>
 				<div
 					v-if="memo.contentType === 'html'"

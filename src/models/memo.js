@@ -40,10 +40,14 @@ export default class Memo extends ActiveRecord {
 		return filename;
 	}
 
+  get resourcePath() {
+    return `/${this.constructor.modelKey}_cache/${this.cacheFilename}`;
+  }
+
 	async fileize() {
 		const filename = this.cacheFilename;
 		const res = await axios.put(
-			`/api/${this.constructor.modelKey}_cache/${filename}`,
+			`/api${this.resourcePath}`,
 			this.content,
 			{
 				headers: { "Content-Type": "text/plain" },

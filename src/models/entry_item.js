@@ -7,6 +7,7 @@ export default class EntryItem extends ActiveRecord {
 		entryId: { type: "string", default: null },
 		itemType: { type: "string", default: null },
 		itemId: { type: "string", default: null },
+    exp: { type: "boolean", default: false }
 	};
 
 	// static attrsAccssor = ["content"];

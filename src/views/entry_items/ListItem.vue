@@ -1,5 +1,5 @@
 <template>
-  <div v-if="entryItem" class="entry-item list-item" :class="{vc: entryItem?.item?.role}">
+  <div v-if="entryItem" class="entry-item list-item" :class="{vc: entryItem?.item?.role, exp: entryItem?.exp }">
 		<div class="entry-item__menus">
 			<span class="icon" @click.stop="showMenus = true"></span>
 			<div
@@ -16,7 +16,10 @@
 					<li>
 						<a @click="edit">Edit</a>
 					</li>
-					<li>
+					<li v-if="entryItem.itemType === 'Entry'">
+						<a @click="toggle">Toggle</a>
+					</li>
+					<li v-if="entryItem.itemType === 'Memo'">
             <div class="inline-btn-group">
               <a @click="toRole()">N</a>
               <a v-for="role in Memo.ROLES" :key="role" @click="toRole(role)">{{ role }}</a>
@@ -170,6 +173,15 @@
         await item.save();
         afterSubmit();
       }
+    }
+  }
+
+  async function toggle(){
+    const { entryItem } = props;
+    if (entryItem.itemType === "Entry") {
+      entryItem.exp = !entryItem.exp;
+      await enryItem.save();
+      afterSubmit();
     }
   }
 
